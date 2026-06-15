@@ -58,7 +58,7 @@ export function Footer() {
                   key={s.name}
                   href={s.href}
                   aria-label={s.name}
-                  className='w-10 h-10 border border-bs-neutral-800 flex items-center justify-center rounded-full transition-all   duration-500 ease-in-out hover-bg-primary cursor-pointer'
+                  className='w-10 h-10 flex items-center justify-center rounded-full transition-all duration-500 ease-in-out hover-bg-primary cursor-pointer'
                 >
                   <Image src={s.icon} alt={s.name} className='w-full h-full' />
                 </a>

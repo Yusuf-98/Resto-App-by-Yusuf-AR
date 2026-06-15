@@ -6,14 +6,7 @@ import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import JohnDoe48 from '@/assets/images/john-doe-48.png';
-
-interface ChangeAddressModalProps {
-  initialAddress: string;
-  initialPhone: string;
-  avatar?: string;
-  onClose: () => void;
-  onSave: (address: string, phone: string) => void;
-}
+import { ChangeAddressModalProps } from '@/types';
 
 export function ChangeAddressModal({
   initialAddress,

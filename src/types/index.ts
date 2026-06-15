@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 // ── Auth ─────────────────────────────────────────────────────────────────────
 export interface User {
   id: string;
@@ -30,6 +32,10 @@ export interface RegisterPayload {
   email: string;
   phone: string;
   password: string;
+}
+
+export interface LoginFormProps {
+  onSwitchTab: () => void;
 }
 
 // ── Restaurant ───────────────────────────────────────────────────────────────
@@ -89,6 +95,11 @@ export interface RestaurantDetail extends Restaurant {
   totalReviews?: number;
   coordinates?: { lat: number; long: number };
 }
+
+export interface RestaurantCardProps {
+  restaurant: Restaurant;
+}
+
 // ── Filter ───────────────────────────────────────────────────────────────────
 export interface RestaurantFilter {
   location?: string;
@@ -203,4 +214,47 @@ export interface ReviewPayload {
   star: number;
   comment: string;
   menuIds?: (string | number)[];
+}
+
+// ── Change Address ───────────────────────────────────────────────────────────────────
+export interface ChangeAddressModalProps {
+  initialAddress: string;
+  initialPhone: string;
+  avatar?: string;
+  onClose: () => void;
+  onSave: (address: string, phone: string) => void;
+}
+
+// ── Fade In Stagger ───────────────────────────────────────────────────────────────────
+export interface FadeInStaggerProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export interface FadeInItemProps {
+  children: ReactNode;
+  className?: string;
+  index?: number;
+}
+
+// ── Filter Panel ───────────────────────────────────────────────────────────────────
+export interface FilterPanelProps {
+  selectedRange: string;
+  setSelectedRange: (value: string) => void;
+  priceMin: string;
+  setPriceMin: (value: string) => void;
+  priceMax: string;
+  setPriceMax: (value: string) => void;
+  selectedRatings: number[];
+  toggleRating: (r: number) => void;
+}
+
+// ── Star Rating ───────────────────────────────────────────────────────────────────
+export interface StarRatingProps {
+  value: number;
+  onChange?: (value: number) => void;
+  readonly?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  starClassName?: string;
+  containerClassName?: string;
 }

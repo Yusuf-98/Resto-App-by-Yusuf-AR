@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import CBP from '@/assets/images/image-8.png';
+import CBP from '@/assets/images/login-image.png';
 import LogoColor from '@/assets/images/logo-color.png';
 import { LoginForm } from '@/components/features/auth/LoginForm';
 import { RegisterForm } from '@/components/features/auth/RegisterForm';

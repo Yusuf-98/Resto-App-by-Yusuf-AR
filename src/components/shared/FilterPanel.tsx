@@ -2,17 +2,7 @@ import Image from 'next/image';
 import StarIcon from '@/assets/icons/star.png';
 import CheckboxTicked from '@/assets/icons/checkbox-ticked.png';
 import CheckboxUnticked from '@/assets/icons/checkbox-unticked.png';
-
-interface FilterPanelProps {
-  selectedRange: string;
-  setSelectedRange: (value: string) => void;
-  priceMin: string;
-  setPriceMin: (value: string) => void;
-  priceMax: string;
-  setPriceMax: (value: string) => void;
-  selectedRatings: number[];
-  toggleRating: (r: number) => void;
-}
+import { FilterPanelProps } from '@/types';
 
 const distances = [
   { label: 'Nearby', value: 'nearby' },

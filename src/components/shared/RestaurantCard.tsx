@@ -1,13 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import StarIcon from '@/assets/icons/star.png';
-import LocationIcon from '@/assets/icons/location.png';
 import { getDummyDistance } from '@/lib/utils';
 import type { Restaurant } from '@/types';
-
-interface RestaurantCardProps {
-  restaurant: Restaurant;
-}
+import { RestaurantCardProps } from '@/types';
 
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   const rating = restaurant.star ?? restaurant.rating;

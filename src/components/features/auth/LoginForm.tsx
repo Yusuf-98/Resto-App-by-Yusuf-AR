@@ -13,10 +13,6 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 import type { AuthResponse } from '@/types';
 
-interface LoginFormProps {
-  onSwitchTab: () => void;
-}
-
 export function LoginForm({}: LoginFormProps) {
   const router = useRouter();
   const { setAuth } = useAuthStore();

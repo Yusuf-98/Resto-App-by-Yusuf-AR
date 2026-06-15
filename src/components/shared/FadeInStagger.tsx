@@ -2,12 +2,7 @@
 
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import type { ReactNode } from 'react';
-
-interface FadeInStaggerProps {
-  children: ReactNode;
-  className?: string;
-}
+import { FadeInStaggerProps, FadeInItemProps } from '@/types';
 
 export function FadeInStagger({ children, className }: FadeInStaggerProps) {
   return (
@@ -15,12 +10,6 @@ export function FadeInStagger({ children, className }: FadeInStaggerProps) {
       <AnimatePresence initial={false}>{children}</AnimatePresence>
     </div>
   );
-}
-
-interface FadeInItemProps {
-  children: ReactNode;
-  className?: string;
-  index?: number;
 }
 
 export function FadeInItem({
