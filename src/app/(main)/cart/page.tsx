@@ -18,15 +18,24 @@ import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 import CartItemRow from '@/components/shared/CartItemRow';
 
 export default function CartPage() {
+  // --- Auth Guard ---
   const { isAuthenticated, hasHydrated } = useRequireAuth();
+
+  // --- Data Fetching ---
   const { data: cartGroups, isLoading } = useCart();
   const updateItem = useUpdateCartItem();
   const deleteItem = useDeleteCartItem();
+
+  // --- UI State ---
   const [pendingId, setPendingId] = useState<string | null>(null);
+
+  const placeholder =
+    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&q=80';
 
   if (!hasHydrated) return null;
   if (!isAuthenticated) return null;
 
+  // --- Handlers ---
   async function handleUpdate(id: string, qty: number) {
     setPendingId(id);
     if (qty < 1) {
@@ -49,16 +58,16 @@ export default function CartPage() {
     }
   }
 
-  const placeholder =
-    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&q=80';
-
   return (
     <div className='custom-container min-h-screen items-center flex justify-center pt-20 md:pt-22 lg:pt-32'>
       <div className='flex flex-col gap-4 md:gap-8 w-full md:w-114 lg:w-200'>
+        {/* --- Page Title --- */}
         <h1 className='text-display-xs md:text-display-md-track font-extrabold text-neutral-950'>
           My Cart
         </h1>
+
         <div className='mb-10 md:mb-26'>
+          {/* --- Loading State --- */}
           {isLoading ? (
             <div className='space-y-4'>
               {Array.from({ length: 2 }).map((_, i) => (
@@ -73,6 +82,7 @@ export default function CartPage() {
               ))}
             </div>
           ) : !cartGroups || cartGroups.length === 0 ? (
+            // --- Empty State ---
             <div className='flex flex-col items-center justify-center py-24 text-center'>
               <div className='mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-neutral-100'>
                 <ShoppingBag className='h-12 w-12 text-neutral-300' />
@@ -91,6 +101,7 @@ export default function CartPage() {
               </Link>
             </div>
           ) : (
+            // --- Cart Groups ---
             <FadeInStagger className='space-y-4'>
               {cartGroups.map((group, groupIndex) => {
                 const groupTotal = group.items.reduce(
@@ -100,6 +111,7 @@ export default function CartPage() {
                 return (
                   <FadeInItem key={group.restaurant?.id} index={groupIndex}>
                     <div className='rounded-3xl bg-white p-4 shadow-card'>
+                      {/* --- Restaurant Header --- */}
                       <Link
                         href={`/resto/${group.restaurant?.id}`}
                         className='mb-5 flex items-center gap-1 md:gap-2 text-md md:text-lg font-bold md:font-extrabold text-neutral-950'
@@ -113,6 +125,7 @@ export default function CartPage() {
                         <ChevronRight className='h-5 w-5 text-neutral-950' />
                       </Link>
 
+                      {/* --- Cart Items --- */}
                       <FadeInStagger className='space-y-4'>
                         {group.items.map((item, itemIndex) => (
                           <FadeInItem key={item.id} index={itemIndex}>
@@ -126,6 +139,7 @@ export default function CartPage() {
                         ))}
                       </FadeInStagger>
 
+                      {/* --- Dashed Divider --- */}
                       <div
                         className='mb-3 mt-3 md:mb-4 md:mt-6 w-full'
                         style={{
@@ -135,6 +149,7 @@ export default function CartPage() {
                         }}
                       />
 
+                      {/* --- Group Total & Checkout --- */}
                       <div className='flex flex-col gap-3 md:flex-row items-center md:justify-between'>
                         <div className='w-full flex flex-col items-start'>
                           <p className='h-7 md:h-7.5 text-sm md:text-md md:tracking-tight-3 font-medium text-neutral-950'>

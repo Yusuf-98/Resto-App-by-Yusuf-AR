@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User } from '@/types';
 
+// --- Auth Store Types ---
 interface AuthState {
   token: string | null;
   user: User | null;
@@ -15,6 +16,7 @@ interface AuthState {
   setHasHydrated: (val: boolean) => void;
 }
 
+// --- Auth Store ---
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
@@ -23,24 +25,22 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       _hasHydrated: false,
 
+      // --- Hydration Flag ---
       setHasHydrated: (val) => set({ _hasHydrated: val }),
 
+      // --- Set Auth ---
       setAuth: (token, user) => {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('foody_token', token);
-        }
         set({ token, user, isAuthenticated: true });
       },
 
+      // --- Update User ---
       setUser: (user) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...user } : (user as User),
         })),
 
+      // --- Logout ---
       logout: () => {
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('foody_token');
-        }
         set({ token: null, user: null, isAuthenticated: false });
       },
     }),

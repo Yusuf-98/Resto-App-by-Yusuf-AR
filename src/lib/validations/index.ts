@@ -13,12 +13,9 @@ export const registerSchema = z
     phone: z
       .string()
       .min(10, 'Nomor HP minimal 10 digit')
+      .max(15, 'Nomor HP maksimal 15 digit')
       .regex(/^[0-9+\-\s()]+$/, 'Format nomor HP tidak valid'),
-    password: z
-      .string()
-      .min(8, 'Password minimal 8 karakter')
-      .regex(/[A-Z]/, 'Harus mengandung huruf kapital')
-      .regex(/[0-9]/, 'Harus mengandung angka'),
+    password: z.string().min(8, 'Password minimal 8 karakter'),
     confirmPassword: z.string(),
   })
   .refine((d) => d.password === d.confirmPassword, {

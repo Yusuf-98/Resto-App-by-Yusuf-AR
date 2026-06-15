@@ -12,10 +12,14 @@ import { useAuthStore } from '@/store/auth.store';
 import { Button } from '@/components/ui/button';
 
 function RegisterContent() {
+  // --- Auth Guard ---
   const { isAuthenticated, _hasHydrated } = useAuthStore();
   const router = useRouter();
+
+  // --- UI State ---
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signup');
 
+  // --- Redirect if Already Logged In ---
   useEffect(() => {
     if (_hasHydrated && isAuthenticated) {
       router.replace('/');
@@ -28,7 +32,7 @@ function RegisterContent() {
   return (
     <div className='flex min-h-screen w-full justify-center'>
       <div className='flex w-full max-w-360'>
-        {/* Left — hero image */}
+        {/* --- Hero Image --- */}
         <div
           className='hidden md:block md:w-1/2 overflow-hidden'
           style={{ aspectRatio: '720/1024' }}
@@ -43,12 +47,13 @@ function RegisterContent() {
           />
         </div>
 
-        {/* Right — form */}
+        {/* --- Form Section --- */}
         <div className='flex w-full md:w-1/2 items-center justify-center bg-white py-16'>
           <div
             className='flex w-full flex-col max-w-93.5'
             style={{ gap: 'clamp(16px, 1.569vw + 9.804px, 20px)' }}
           >
+            {/* --- Logo --- */}
             <Link href='/'>
               <Image
                 src={LogoColor}
@@ -58,6 +63,7 @@ function RegisterContent() {
               />
             </Link>
 
+            {/* --- Heading --- */}
             <div className='flex flex-col gap-1'>
               <h1 className='text-display-sm font-extrabold text-neutral-950'>
                 Welcome Back
@@ -70,6 +76,7 @@ function RegisterContent() {
               </p>
             </div>
 
+            {/* --- Tab Switcher --- */}
             <div className='flex rounded-2xl bg-neutral-100 p-1 gap-1'>
               <Button
                 type='button'
@@ -91,6 +98,7 @@ function RegisterContent() {
               </Button>
             </div>
 
+            {/* --- Auth Form --- */}
             {activeTab === 'signin' ? (
               <LoginForm onSwitchTab={() => setActiveTab('signup')} />
             ) : (

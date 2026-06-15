@@ -30,8 +30,18 @@ export async function getProfile(): Promise<User> {
 }
 
 export async function updateProfile(
-  payload: Partial<Pick<User, 'name' | 'phone'>>
+  payload: Partial<Pick<User, 'name' | 'phone'>> & {
+    avatar?: File;
+    address?: string;
+  }
 ): Promise<User> {
-  const { data } = await apiClient.put('/api/auth/profile', payload);
+  const formData = new FormData();
+  if (payload.name) formData.append('name', payload.name);
+  if (payload.phone) formData.append('phone', payload.phone);
+  if (payload.avatar) formData.append('avatar', payload.avatar);
+
+  const { data } = await apiClient.put('/api/auth/profile', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return (data as { data: User }).data ?? (data as User);
 }

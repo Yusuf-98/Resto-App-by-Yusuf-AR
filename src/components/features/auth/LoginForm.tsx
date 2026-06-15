@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 import type { AuthResponse } from '@/types';
+import { LoginFormProps } from '@/types';
 
 export function LoginForm({}: LoginFormProps) {
   const router = useRouter();

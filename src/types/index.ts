@@ -38,6 +38,10 @@ export interface LoginFormProps {
   onSwitchTab: () => void;
 }
 
+export interface RegisterFormProps {
+  onSwitchTab: () => void;
+}
+
 // ── Restaurant ───────────────────────────────────────────────────────────────
 export interface Restaurant {
   id: string | number;

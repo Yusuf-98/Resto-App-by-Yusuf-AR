@@ -28,6 +28,7 @@ import BankMandiri from '@/assets/icons/mandiri.png';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
+// --- Payment Methods ---
 const PAYMENT_METHODS = [
   { id: 'bni', name: 'Bank Negara Indonesia', logo: BankBni },
   { id: 'bri', name: 'Bank Rakyat Indonesia', logo: BankBri },
@@ -35,22 +36,34 @@ const PAYMENT_METHODS = [
   { id: 'mandiri', name: 'Mandiri', logo: BankMandiri },
 ];
 
+// --- Fee Constants ---
 const DELIVERY_FEE = 10000;
 const SERVICE_FEE = 1000;
 
 function CheckoutContent() {
+  // --- URL Params ---
   const searchParams = useSearchParams();
   const restaurantId = searchParams.get('restaurantId');
+
+  // --- Auth Guard ---
   const { isAuthenticated, hasHydrated } = useRequireAuth();
   const { user } = useAuthStore();
+
+  // --- Data Fetching ---
   const { data: cartGroups, isLoading } = useCart();
   const checkout = useCheckout();
   const deleteItem = useDeleteCartItem();
+
+  // --- UI Store ---
   const { paymentSuccessData, setPaymentSuccess, clearPaymentSuccess } =
     useUIStore();
+
+  // --- UI State ---
   const [localQty, setLocalQty] = useState<Record<string, number>>({});
   const [showAddressModal, setShowAddressModal] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
+  // --- Form ---
   const {
     register,
     handleSubmit,
@@ -70,11 +83,13 @@ function CheckoutContent() {
   const deliveryAddress = watch('deliveryAddress');
   const phone = watch('phone');
 
+  // --- Prefill Address from User Profile ---
   useEffect(() => {
     if (user?.address) setValue('deliveryAddress', user.address);
     if (user?.phone) setValue('phone', user.phone);
   }, [user?.address, user?.phone, setValue, hasHydrated]);
 
+  // --- Lock Scroll on Success Modal ---
   useEffect(() => {
     if (paymentSuccessData) {
       document.body.style.overflow = 'hidden';
@@ -89,6 +104,7 @@ function CheckoutContent() {
   if (!hasHydrated) return null;
   if (!isAuthenticated) return null;
 
+  // --- Derived Data ---
   const targetGroups = restaurantId
     ? (cartGroups ?? []).filter(
         (g) => String(g.restaurant?.id) === String(restaurantId)
@@ -107,12 +123,12 @@ function CheckoutContent() {
   );
   const total = subtotal + DELIVERY_FEE + SERVICE_FEE;
   const itemCount = targetGroups.reduce((s, g) => s + g.items.length, 0);
+  const isAddressValid = (deliveryAddress ?? '').trim().length >= 10;
 
   const placeholder =
     'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&q=80';
 
-  const isAddressValid = (deliveryAddress ?? '').trim().length >= 10;
-
+  // --- Submit Handler ---
   async function onSubmit(values: CheckoutFormValues) {
     if (!targetGroups.length) {
       toast({ title: 'Cart is empty', variant: 'error' });
@@ -133,7 +149,7 @@ function CheckoutContent() {
         notes: values.notes,
       });
 
-      // Hapus hanya item dari restoran yang di-checkout
+      // --- Delete Checked Out Items ---
       const itemsToDelete = targetGroups.flatMap((g) =>
         g.items.map((i) => String(i.id))
       );
@@ -170,6 +186,7 @@ function CheckoutContent() {
   return (
     <div className='custom-container min-h-screen items-center flex justify-center pt-20 md:pt-22 lg:pt-32 mb-12 md:mb-25'>
       <div className='mx-auto w-full lg:w-250 flex flex-col gap-4 md:gap-6'>
+        {/* --- Page Title --- */}
         <FadeInItem index={0}>
           <h1 className='w-full text-display-xs md:text-display-md-track font-extrabold text-neutral-950'>
             Checkout
@@ -178,9 +195,9 @@ function CheckoutContent() {
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className='flex flex-col gap-4 md:gap-5 md:flex-row lg:items-start'>
-            {/* Left */}
+            {/* --- Left Column --- */}
             <div className='w-full min-w-90 flex flex-col gap-4 md:gap-5'>
-              {/* Delivery address */}
+              {/* --- Delivery Address --- */}
               <FadeInItem index={1}>
                 <div className='flex flex-col gap-4 md:gap-5.25 p-4 md:p-5 shadow-card rounded-2xl bg-white'>
                   <div className='flex flex-col gap-1'>
@@ -194,7 +211,6 @@ function CheckoutContent() {
                         Delivery Address
                       </h2>
                     </div>
-
                     <div className='flex flex-col gap-4 pt-8 px-2'>
                       {isAddressValid ? (
                         <>
@@ -219,7 +235,6 @@ function CheckoutContent() {
                       )}
                     </div>
                   </div>
-
                   <div className='flex'>
                     <button
                       type='button'
@@ -232,7 +247,7 @@ function CheckoutContent() {
                 </div>
               </FadeInItem>
 
-              {/* Cart items */}
+              {/* --- Cart Items per Restaurant --- */}
               {isLoading ? (
                 <div className='h-48 animate-pulse rounded-2xl bg-white' />
               ) : (
@@ -240,6 +255,7 @@ function CheckoutContent() {
                   {targetGroups.map((group, groupIdx) => (
                     <FadeInItem key={group.restaurant?.id} index={groupIdx + 2}>
                       <div className='rounded-2xl bg-white flex flex-col gap-3 md:gap-5 p-4 md:p-5 shadow-card'>
+                        {/* --- Restaurant Header --- */}
                         <div className='flex items-center justify-between py-0.5'>
                           <div className='flex items-center gap-2'>
                             <Image
@@ -251,13 +267,15 @@ function CheckoutContent() {
                               {group.restaurant?.name}
                             </h3>
                           </div>
-                          <button
-                            type='button'
-                            className='h-9 md:h-10 w-30 flex justify-center rounded-full border border-neutral-300 px-6 py-2 md:p-2 text-sm md:text-md tracking-tight-2 font-bold text-neutral-950 hover-dark items-center transition-all duration-500 ease-in-out cursor-pointer'
+                          <Link
+                            href={`/resto/${group.restaurant?.id}`}
+                            className='h-9 md:h-10 w-30 flex justify-center rounded-full border border-neutral-300 px-6 py-2 md:p-2 text-sm md:text-md tracking-tight-2 font-bold text-neutral-950 hover-dark items-center transition-all duration-500 ease-in-out'
                           >
                             Add item
-                          </button>
+                          </Link>
                         </div>
+
+                        {/* --- Item List --- */}
                         <div className='flex flex-col gap-3 md:gap-5 py-2.5'>
                           {group.items.map((item) => {
                             const key = String(item.id);
@@ -285,9 +303,10 @@ function CheckoutContent() {
               )}
             </div>
 
-            {/* Right */}
+            {/* --- Right Column --- */}
             <FadeInItem index={2}>
               <div className='w-full md:max-w-97.5 md:min-w-85 rounded-2xl bg-white py-4 md:py-5 shadow-card'>
+                {/* --- Payment Method --- */}
                 <div className='flex flex-col gap-3 md:gap-4 px-4 md:px-5'>
                   <h2 className='h-7.5 md:h-8 font-extrabold text-md md:text-lg md:tracking-tight-2 text-neutral-950'>
                     Payment Method
@@ -336,7 +355,7 @@ function CheckoutContent() {
                   </p>
                 )}
 
-                {/* Dashed divider */}
+                {/* --- Dashed Divider --- */}
                 <div className='relative my-5'>
                   <div className='absolute -left-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-neutral-100' />
                   <div
@@ -350,7 +369,7 @@ function CheckoutContent() {
                   <div className='absolute -right-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-neutral-100' />
                 </div>
 
-                {/* Summary */}
+                {/* --- Payment Summary --- */}
                 <div className='flex flex-col gap-3 md:gap-4 px-4 md:px-5'>
                   <h2 className='h-7.5 md:h-8 font-extrabold text-md md:text-lg md:tracking-tight-2 text-neutral-950'>
                     Payment Summary
@@ -387,21 +406,35 @@ function CheckoutContent() {
                       {formatCurrency(total)}
                     </span>
                   </div>
-                  <Button
-                    type='submit'
-                    variant={'default'}
-                    size={'default'}
-                    disabled={
-                      checkout.isPending ||
-                      deleteItem.isPending ||
-                      !isAddressValid
-                    }
-                    className='hover-dim transition-all disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-60'
+
+                  {/* --- Buy Button & Tooltip --- */}
+                  <div
+                    className='relative'
+                    onMouseEnter={() => !isAddressValid && setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)}
                   >
-                    {checkout.isPending || deleteItem.isPending
-                      ? 'Processing...'
-                      : 'Buy'}
-                  </Button>
+                    <Button
+                      type='submit'
+                      variant={'default'}
+                      size={'default'}
+                      disabled={
+                        checkout.isPending ||
+                        deleteItem.isPending ||
+                        !isAddressValid
+                      }
+                      className='w-full hover-dim transition-all disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60'
+                    >
+                      {checkout.isPending || deleteItem.isPending
+                        ? 'Processing...'
+                        : 'Buy'}
+                    </Button>
+                    {showTooltip && !isAddressValid && (
+                      <div className='absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-56 rounded-lg bg-neutral-950 px-3 py-2 text-xs text-white text-center pointer-events-none z-10'>
+                        Alamat pengiriman masih kosong
+                        <div className='absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-950' />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </FadeInItem>
@@ -409,6 +442,7 @@ function CheckoutContent() {
         </form>
       </div>
 
+      {/* --- Change Address Modal --- */}
       {showAddressModal && (
         <ChangeAddressModal
           initialAddress={deliveryAddress ?? ''}
@@ -422,9 +456,9 @@ function CheckoutContent() {
         />
       )}
 
-      {/* Payment Success Modal */}
+      {/* --- Payment Success Modal --- */}
       {paymentSuccessData && (
-        <div className='fixed inset-0 z-25 flex flex-col items-center justify-center bg-white'>
+        <div className='fixed inset-0 z-250 flex flex-col items-center justify-center bg-white'>
           <FadeInItem index={0}>
             <Image
               src={LogoColor}
@@ -434,6 +468,7 @@ function CheckoutContent() {
           </FadeInItem>
           <FadeInItem index={1}>
             <div className='w-90.25 md:w-99 lg:w-107 overflow-hidden rounded-2xl p-4 md:p-5 mt-7 bg-white shadow-card'>
+              {/* --- Success Icon & Message --- */}
               <div className='flex flex-col items-center'>
                 <div className='flex h-16 w-16 items-center justify-center rounded-full'>
                   <Image
@@ -450,7 +485,7 @@ function CheckoutContent() {
                 </p>
               </div>
 
-              {/* Dashed divider */}
+              {/* --- Dashed Divider --- */}
               <div className='relative my-3.5 -mx-4 md:-mx-5'>
                 <div className='absolute -left-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-neutral-100' />
                 <div
@@ -464,6 +499,7 @@ function CheckoutContent() {
                 <div className='absolute -right-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-neutral-100' />
               </div>
 
+              {/* --- Payment Details --- */}
               <FadeInStagger className='flex flex-col gap-6 md:gap-4'>
                 {[
                   { label: 'Date', value: paymentSuccessData.date },
@@ -497,7 +533,7 @@ function CheckoutContent() {
                 ))}
               </FadeInStagger>
 
-              {/* Dashed divider */}
+              {/* --- Dashed Divider --- */}
               <div className='relative my-4 -mx-4 md:-mx-5'>
                 <div className='absolute -left-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-neutral-100' />
                 <div
@@ -511,6 +547,7 @@ function CheckoutContent() {
                 <div className='absolute -right-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-neutral-100' />
               </div>
 
+              {/* --- Total --- */}
               <FadeInItem index={5}>
                 <div className='h-7.5 md:h-8 flex items-center justify-between'>
                   <span className='text-md tracking-tight-2 md:text-lg md:tracking-none text-neutral-950'>
@@ -522,6 +559,7 @@ function CheckoutContent() {
                 </div>
               </FadeInItem>
 
+              {/* --- See Orders Button --- */}
               <FadeInItem index={6}>
                 <Link
                   href='/orders'

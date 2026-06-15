@@ -24,10 +24,10 @@ const helpLinks = [
 ];
 
 const socialLinks = [
-  { name: 'Facebook', href: '#', icon: Facebook },
-  { name: 'Instagram', href: '#', icon: Instagram },
-  { name: 'LinkedIn', href: '#', icon: LinkedIn },
-  { name: 'TikTok', href: '#', icon: Tiktok },
+  { name: 'Facebook', href: 'https://www.facebook.com/', icon: Facebook },
+  { name: 'Instagram', href: 'https://www.instagram.com/', icon: Instagram },
+  { name: 'LinkedIn', href: 'https://id.linkedin.com/', icon: LinkedIn },
+  { name: 'TikTok', href: 'https://www.tiktok.com/id-ID/', icon: Tiktok },
 ];
 
 export function Footer() {
@@ -57,6 +57,8 @@ export function Footer() {
                 <a
                   key={s.name}
                   href={s.href}
+                  target='_blank'
+                  rel='noopener noreferrer'
                   aria-label={s.name}
                   className='w-10 h-10 flex items-center justify-center rounded-full transition-all duration-500 ease-in-out hover-bg-primary cursor-pointer'
                 >

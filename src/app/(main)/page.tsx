@@ -23,6 +23,7 @@ import LunchIcon from '@/assets/icons/lunch.png';
 import { Button } from '@/components/ui/button';
 import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 
+// --- Category List ---
 const CATEGORIES = [
   { label: 'All Restaurant', icon: RestaurantIcon, href: '/category' },
   { label: 'Nearby', icon: NearbyIcon, href: '/category?filter=nearby' },
@@ -39,39 +40,37 @@ const CATEGORIES = [
 export default function HomePage() {
   const router = useRouter();
   const { isAuthenticated, _hasHydrated } = useAuthStore();
+
+  // --- UI State ---
   const [query, setQuery] = useState('');
   const [showMore, setShowMore] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
-  // untuk non-login dan tombol See All
+  // --- Data Fetching ---
   const { data: allRestos, isLoading: loadingAll } = useRestaurants({
     limit: 24,
   });
-
-  // untuk login (recommended)
   const { data: recommended, isLoading: loadingRec } = useRecommended({
     limit: 12,
   });
-
   const { data: searchResults, isLoading: loadingSearch } =
     useRestaurantSearch(query);
 
+  // --- Derived State ---
   const isSearching = query.length >= 2;
-
   const mainList = isSearching
     ? (searchResults ?? [])
     : !_hasHydrated || showAll || !isAuthenticated
       ? (allRestos ?? [])
       : (recommended ?? []);
-
   const isLoadingMain = isSearching
     ? loadingSearch
     : showAll || !isAuthenticated
       ? loadingAll
       : loadingRec;
-
   const visibleMain = showMore ? mainList : mainList.slice(0, 12);
 
+  // --- Handlers ---
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (query.trim()) {
@@ -81,7 +80,7 @@ export default function HomePage() {
 
   return (
     <div className='mb-13'>
-      {/* Hero */}
+      {/* --- Hero Section --- */}
       <FadeInItem index={0}>
         <section
           className='relative flex items-center justify-center'
@@ -95,6 +94,7 @@ export default function HomePage() {
         >
           <div className='absolute inset-0 bg-black/35' />
           <div className='flex flex-col gap-6 md:gap-10 z-10 w-full md:mt-5 md:w-186 px-4 text-center'>
+            {/* --- Hero Title --- */}
             <FadeInItem index={1}>
               <div className='flex flex-col gap-1 md:gap-2'>
                 <h1 className='text-display-lg-track md:text-display-2xl-track font-extrabold text-white text-center'>
@@ -106,6 +106,8 @@ export default function HomePage() {
                 </p>
               </div>
             </FadeInItem>
+
+            {/* --- Search Bar --- */}
             <FadeInItem index={2}>
               <form
                 onSubmit={handleSearch}
@@ -131,7 +133,7 @@ export default function HomePage() {
         </section>
       </FadeInItem>
 
-      {/* Categories */}
+      {/* --- Categories Section --- */}
       <section className='mx-auto w-full max-w-360 px-4 py-6 md:px-30 md:py-12'>
         <FadeInStagger className='grid grid-cols-3 lg:grid-cols-6 gap-x-3 gap-y-5 md:gap-x-5'>
           {CATEGORIES.map((cat, idx) => (
@@ -156,8 +158,9 @@ export default function HomePage() {
         </FadeInStagger>
       </section>
 
-      {/* Recommended / All Restaurant / Search */}
+      {/* --- Restaurant List Section --- */}
       <section className='mx-auto w-full max-w-360 flex flex-col px-4 pb-12 gap-4 md:gap-6 lg:gap-8 md:px-10 lg:px-30'>
+        {/* --- Section Header --- */}
         <FadeInItem index={0}>
           <div className='flex items-center justify-between'>
             <h2 className='text-display-xs md:text-display-md font-extrabold text-neutral-950'>
@@ -178,6 +181,7 @@ export default function HomePage() {
           </div>
         </FadeInItem>
 
+        {/* --- Loading State --- */}
         <div>
           {isLoadingMain ? (
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 md:gap-5'>
@@ -186,6 +190,7 @@ export default function HomePage() {
               ))}
             </div>
           ) : mainList.length === 0 ? (
+            // --- Empty State ---
             <div className='flex flex-col items-center py-16 text-center'>
               <span className='mb-3 text-5xl'>🍽️</span>
               <p className='text-lg font-semibold text-neutral-700'>
@@ -196,16 +201,17 @@ export default function HomePage() {
               </p>
             </div>
           ) : (
+            // --- Restaurant Grid ---
             <>
               <FadeInStagger className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 md:gap-5'>
-                {visibleMain.map((r, idx) => {
-                  return (
-                    <FadeInItem key={idx} index={idx}>
-                      <RestaurantCard restaurant={r} />
-                    </FadeInItem>
-                  );
-                })}
+                {visibleMain.map((r, idx) => (
+                  <FadeInItem key={idx} index={idx}>
+                    <RestaurantCard restaurant={r} />
+                  </FadeInItem>
+                ))}
               </FadeInStagger>
+
+              {/* --- Show More Button --- */}
               {mainList.length > 12 && !showMore && (
                 <div className='mt-8 flex justify-center'>
                   <Button

@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import StarIcon from '@/assets/icons/star.png';
 import { getDummyDistance } from '@/lib/utils';
-import type { Restaurant } from '@/types';
 import { RestaurantCardProps } from '@/types';
 
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {

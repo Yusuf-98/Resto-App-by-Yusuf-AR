@@ -128,6 +128,8 @@ export function Navbar() {
                       <Image
                         src={user.avatar}
                         alt={user.name ?? 'User'}
+                        width={48}
+                        height={48}
                         className='h-full w-full object-cover'
                         unoptimized
                       />
@@ -161,6 +163,8 @@ export function Navbar() {
                           <Image
                             src={user.avatar}
                             alt={user.name ?? ''}
+                            width={48}
+                            height={48}
                             className='h-full w-full object-cover'
                             unoptimized
                           />

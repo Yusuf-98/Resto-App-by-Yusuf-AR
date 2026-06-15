@@ -21,6 +21,7 @@ import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 import { toast } from '@/hooks/use-toast';
 import type { OrderStatus, Order } from '@/types';
 
+// --- Status Tab Options ---
 const STATUS_TABS: { label: string; value: OrderStatus }[] = [
   { label: 'Preparing', value: 'preparing' },
   { label: 'On the Way', value: 'on_the_way' },
@@ -30,19 +31,24 @@ const STATUS_TABS: { label: string; value: OrderStatus }[] = [
 ];
 
 export default function OrdersPage() {
+  // --- Auth Guard ---
   const { isAuthenticated, hasHydrated } = useRequireAuth();
   const { user, logout } = useAuthStore();
   const router = useRouter();
   const qc = useQueryClient();
+
+  // --- UI State ---
   const [activeStatus, setActiveStatus] = useState<OrderStatus>('preparing');
   const [search, setSearch] = useState('');
   const [reviewOrder, setReviewOrder] = useState<Order | null>(null);
   const [reviewStar, setReviewStar] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
+
+  // --- Data Fetching ---
+  const { data: orders, isLoading } = useMyOrders({ status: activeStatus });
   const createReview = useCreateReview();
 
-  const { data: orders, isLoading } = useMyOrders({ status: activeStatus });
-
+  // --- Filtered Orders ---
   const filtered = search
     ? (orders ?? []).filter((o) =>
         o.restaurants?.some((r) =>
@@ -51,6 +57,7 @@ export default function OrdersPage() {
       )
     : (orders ?? []);
 
+  // --- Lock Scroll on Review Modal ---
   useEffect(() => {
     if (reviewOrder) {
       document.body.style.overflow = 'hidden';
@@ -62,6 +69,7 @@ export default function OrdersPage() {
     };
   }, [reviewOrder]);
 
+  // --- Handlers ---
   function handleLogout() {
     logout();
     qc.clear();
@@ -115,9 +123,10 @@ export default function OrdersPage() {
     <div className='min-h-screen'>
       <div className='custom-container pt-20 md:pt-32 pb-8 md:pb-25'>
         <div className='flex flex-col gap-8 lg:flex-row lg:items-start'>
-          {/* Sidebar */}
+          {/* --- Sidebar --- */}
           <aside className='hidden shrink-0 lg:block'>
             <div className='sticky w-60 top-24 rounded-2xl bg-white p-5 shadow-card'>
+              {/* --- User Info --- */}
               <div className='flex items-center gap-2 border-b border-neutral-100 pb-4'>
                 <div className='flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-200'>
                   {user?.avatar ? (
@@ -141,7 +150,10 @@ export default function OrdersPage() {
                   {user?.name}
                 </span>
               </div>
+
               <hr className='border-neutral-200 mt-3 mb-5' />
+
+              {/* --- Sidebar Nav --- */}
               <nav className='flex flex-col items-start gap-5'>
                 <Link
                   href='/profile'
@@ -176,8 +188,9 @@ export default function OrdersPage() {
             </div>
           </aside>
 
-          {/* Main */}
+          {/* --- Main Content --- */}
           <div className='w-full flex flex-col gap-4 md:gap-6'>
+            {/* --- Page Title --- */}
             <FadeInItem index={0}>
               <h1 className='text-display-xs md:text-display-md-track font-extrabold text-neutral-950'>
                 My Orders
@@ -186,7 +199,7 @@ export default function OrdersPage() {
 
             <FadeInItem index={1}>
               <div className='flex flex-col rounded-2xl gap-5 p-4 md:p-6'>
-                {/* Search */}
+                {/* --- Search Bar --- */}
                 <div className='relative'>
                   <Image
                     src={Search}
@@ -202,7 +215,7 @@ export default function OrdersPage() {
                   />
                 </div>
 
-                {/* Status tabs */}
+                {/* --- Status Tabs --- */}
                 <div className='flex items-center gap-2 md:gap-3 overflow-x-auto pb-4'>
                   <span className='shrink-0 text-sm md:text-lg tracking-tight-2 md:tracking-tight-3 font-bold text-neutral-950'>
                     Status
@@ -213,7 +226,7 @@ export default function OrdersPage() {
                       onClick={() => setActiveStatus(tab.value)}
                       className={`shrink-0 rounded-full border px-4 py-2 text-sm md:text-md tracking-tight-2 transition-all duration-500 ease-in-out ${
                         activeStatus === tab.value
-                          ? 'border-primary-100 font-bold bg-[rgba(255, 236, 236, 1)] text-primary-100 hover-dim'
+                          ? 'border-primary-100 font-bold bg-[rgba(255,236,236,1)] text-primary-100 hover-dim'
                           : 'border-neutral-300 bg-white font-semibold text-neutral-950 hover-dark'
                       }`}
                     >
@@ -222,8 +235,9 @@ export default function OrdersPage() {
                   ))}
                 </div>
 
-                {/* Orders */}
+                {/* --- Order List --- */}
                 <div className='overflow-hidden rounded-2xl bg-white'>
+                  {/* --- Loading State --- */}
                   {isLoading ? (
                     <div className='space-y-4 p-5'>
                       {Array.from({ length: 3 }).map((_, i) => (
@@ -234,6 +248,7 @@ export default function OrdersPage() {
                       ))}
                     </div>
                   ) : filtered.length === 0 ? (
+                    // --- Empty State ---
                     <div className='flex flex-col items-center justify-center py-20 text-center'>
                       <span className='mb-3 text-5xl'>📋</span>
                       <p className='text-base font-bold text-neutral-700'>
@@ -248,7 +263,7 @@ export default function OrdersPage() {
                       {filtered.map((order, orderIdx) => (
                         <FadeInItem key={order.id} index={orderIdx}>
                           <div className='p-5'>
-                            {/* Restaurants in this order */}
+                            {/* --- Restaurant Groups --- */}
                             {order.restaurants?.map((group, gi) => (
                               <div key={gi} className='mb-4'>
                                 <FadeInItem index={0}>
@@ -264,6 +279,7 @@ export default function OrdersPage() {
                                   </div>
                                 </FadeInItem>
 
+                                {/* --- Order Items --- */}
                                 <FadeInStagger className='flex flex-col'>
                                   {group.items?.slice(0, 2).map((item, ii) => (
                                     <FadeInItem key={ii} index={ii + 1}>
@@ -295,6 +311,7 @@ export default function OrdersPage() {
 
                             <hr className='mt-5 mb-3 border-dashed border-neutral-300' />
 
+                            {/* --- Order Total & Review Button --- */}
                             <div className='flex flex-col justify-center md:flex-row md:items-center md:justify-between mb-3'>
                               <FadeInItem index={0}>
                                 <div className='flex flex-col mb-3'>
@@ -338,7 +355,7 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      {/* Review Modal */}
+      {/* --- Review Modal --- */}
       {reviewOrder && (
         <div
           className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
@@ -348,6 +365,7 @@ export default function OrdersPage() {
             className='w-full max-w-90.25 md:max-w-109.75 flex flex-col gap-4 md:gap-7 rounded-2xl bg-white p-4 md:p-6'
             onClick={(e) => e.stopPropagation()}
           >
+            {/* --- Modal Header --- */}
             <div className='flex items-center justify-between'>
               <h2 className='text-xl md:text-display-xs font-extrabold text-neutral-950'>
                 Give Review
@@ -359,6 +377,8 @@ export default function OrdersPage() {
                 <Image src={XClose} alt='Close' className='h-5 w-5' />
               </button>
             </div>
+
+            {/* --- Star Rating --- */}
             <div className='flex flex-col gap-2 text-center'>
               <p className='text-md font-extrabold text-neutral-950'>
                 Give Rating
@@ -372,6 +392,8 @@ export default function OrdersPage() {
                 />
               </div>
             </div>
+
+            {/* --- Review Comment --- */}
             <textarea
               value={reviewComment}
               onChange={(e) => setReviewComment(e.target.value)}
@@ -379,6 +401,8 @@ export default function OrdersPage() {
               rows={6}
               className='w-full h-58.75 resize-none rounded-2xl border border-neutral-300 py-2 px-3 text-sm md:text-md tracking-tight-2 text-neutral-950 placeholder:text-neutral-500 mt-2'
             />
+
+            {/* --- Submit Button --- */}
             <button
               onClick={handleSubmitReview}
               disabled={createReview.isPending}

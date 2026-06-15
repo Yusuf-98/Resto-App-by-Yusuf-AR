@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useCallback, useState, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import FilterLine from '@/assets/icons/filter-lines.png';
 import CloseFilter from '@/assets/icons/close-filter.png';
@@ -18,17 +18,47 @@ import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 import type { RestaurantFilter } from '@/types';
 
 function CategoryContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
+
+  // --- URL Params ---
   const filter = searchParams.get('filter');
   const category = searchParams.get('category');
   const q = searchParams.get('q') ?? '';
+  const priceMin = searchParams.get('priceMin') ?? '';
+  const priceMax = searchParams.get('priceMax') ?? '';
+  const selectedRange = searchParams.get('range') ?? '';
+  const selectedRatings =
+    searchParams.get('ratings')?.split(',').filter(Boolean).map(Number) ?? [];
 
-  const [priceMin, setPriceMin] = useState('');
-  const [priceMax, setPriceMax] = useState('');
-  const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
-  const [selectedRange, setSelectedRange] = useState('');
+  // --- UI State ---
   const [showFilter, setShowFilter] = useState(false);
 
+  // --- URL Updater ---
+  const updateParam = useCallback(
+    (updates: Record<string, string>) => {
+      const params = new URLSearchParams(searchParams.toString());
+      Object.entries(updates).forEach(([key, val]) => {
+        if (val) params.set(key, val);
+        else params.delete(key);
+      });
+      router.replace(`/category?${params.toString()}`, { scroll: false });
+    },
+    [router, searchParams]
+  );
+
+  // --- Filter Setters ---
+  const setPriceMin = (val: string) => updateParam({ priceMin: val });
+  const setPriceMax = (val: string) => updateParam({ priceMax: val });
+  const setSelectedRange = (val: string) => updateParam({ range: val });
+  const toggleRating = (r: number) => {
+    const next = selectedRatings.includes(r)
+      ? selectedRatings.filter((x) => x !== r)
+      : [...selectedRatings, r];
+    updateParam({ ratings: next.join(',') });
+  };
+
+  // --- API Params ---
   const apiParams: RestaurantFilter = {
     ...(category && category !== 'lunch' && { category }),
     ...(priceMin && { priceMin: Number(priceMin) }),
@@ -37,10 +67,13 @@ function CategoryContent() {
       rating: Math.min(...selectedRatings),
     }),
     ...(selectedRange &&
-      selectedRange !== 'nearby' && { range: Number(selectedRange) }),
+      selectedRange !== 'nearby' && {
+        range: Number(selectedRange),
+      }),
     limit: 24,
   };
 
+  // --- Data Fetching ---
   const { data: allData, isLoading: loadingAll } = useRestaurants(apiParams);
   const { data: bestData, isLoading: loadingBest } = useBestSellers({
     limit: 24,
@@ -61,6 +94,7 @@ function CategoryContent() {
         ? loadingBest
         : loadingAll;
 
+  // --- Page Title ---
   const title = q
     ? `Results for "${q}"`
     : filter === 'best-seller'
@@ -72,12 +106,6 @@ function CategoryContent() {
           : category
             ? category.charAt(0).toUpperCase() + category.slice(1)
             : 'All Restaurant';
-
-  function toggleRating(r: number) {
-    setSelectedRatings((prev) =>
-      prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]
-    );
-  }
 
   const filterProps = {
     selectedRange,
@@ -93,6 +121,7 @@ function CategoryContent() {
   return (
     <div className='custom-container pt-20 md:pt-22 lg:pt-32 pb-12 bg-white'>
       <div className='mx-auto max-w-7xl'>
+        {/* --- Page Title --- */}
         <FadeInItem index={0}>
           <h1 className='mb-5 md:mb-8 text-display-xs lg:text-display-md-track font-extrabold text-neutral-950'>
             {title}
@@ -100,7 +129,7 @@ function CategoryContent() {
         </FadeInItem>
 
         <div className='flex flex-col gap-5 lg:flex-row lg:gap-8'>
-          {/* Filter sidebar - desktop */}
+          {/* --- Filter Sidebar (Desktop) --- */}
           <FadeInItem index={1}>
             <aside className='hidden w-66.5 shrink-0 rounded-xl lg:block'>
               <div className='sticky top-32 rounded-xl bg-white shadow-card'>
@@ -109,7 +138,7 @@ function CategoryContent() {
             </aside>
           </FadeInItem>
 
-          {/* Filter button - mobile */}
+          {/* --- Filter Button (Mobile) --- */}
           <FadeInItem index={1}>
             <button
               onClick={() => setShowFilter(true)}
@@ -120,7 +149,7 @@ function CategoryContent() {
             </button>
           </FadeInItem>
 
-          {/* Results */}
+          {/* --- Restaurant List --- */}
           <div className='flex-1 min-w-0'>
             {isLoading ? (
               <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
@@ -129,6 +158,7 @@ function CategoryContent() {
                 ))}
               </div>
             ) : restaurants.length === 0 ? (
+              // --- Empty State ---
               <FadeInItem index={2}>
                 <div className='flex flex-col items-center justify-center py-24 text-center'>
                   <span className='mb-3 text-5xl'>🍽️</span>
@@ -153,7 +183,7 @@ function CategoryContent() {
         </div>
       </div>
 
-      {/* Filter drawer - mobile */}
+      {/* --- Filter Drawer (Mobile) --- */}
       <AnimatePresence>
         {showFilter && (
           <div className='fixed inset-0 z-50 lg:hidden'>
