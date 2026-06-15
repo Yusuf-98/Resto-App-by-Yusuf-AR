@@ -9,11 +9,6 @@ interface FadeInStaggerProps {
   className?: string;
 }
 
-/**
- * Wrap a group of FadeInItem as parent.
- * AnimatePresence allows items to animate out smoothly when removed
- * (e.g. via "Show Less").
- */
 export function FadeInStagger({ children, className }: FadeInStaggerProps) {
   return (
     <div className={className}>
@@ -28,12 +23,6 @@ interface FadeInItemProps {
   index?: number;
 }
 
-/**
- * Each item animates in (fade + slide up) once when it enters viewport,
- * and animates out smoothly (fade + slide down) when removed
- * (e.g. via "Show Less"). Uses useInView + animate (not whileInView)
- * so the exit animation isn't fought by viewport re-evaluation.
- */
 export function FadeInItem({
   children,
   className,

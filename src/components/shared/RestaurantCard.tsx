@@ -17,7 +17,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   return (
     <Link
       href={`/resto/${restaurant.id}`}
-      className='flex items-center gap-2 md:gap-3 rounded-2xl bg-white shadow-card transition-all hover-scale-105 p-3 md:p-4'
+      className='flex items-center gap-2 md:gap-3 rounded-2xl bg-white shadow-card  transition-all duration-500 ease-in-out cursor-pointer hover-scale-105 p-3 md:p-4'
     >
       {/* Logo */}
       <div

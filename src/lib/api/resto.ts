@@ -27,7 +27,8 @@ export async function getRestaurants(
   params?: RestaurantFilter
 ): Promise<Restaurant[]> {
   const { data } = await apiClient.get('/api/resto', { params });
-  return toArray(data);
+  const result = toArray(data);
+  return result;
 }
 
 export async function getRestaurantById(

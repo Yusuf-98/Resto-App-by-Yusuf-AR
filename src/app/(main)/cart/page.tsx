@@ -85,7 +85,7 @@ export default function CartPage() {
               </p>
               <Link
                 href='/'
-                className='mt-6 rounded-full bg-primary-100 px-7 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-hover'
+                className='mt-6 rounded-full bg-primary-100 px-7 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-500 ease-in-out hover-dim'
               >
                 Find Restaurants
               </Link>
@@ -102,7 +102,7 @@ export default function CartPage() {
                     <div className='rounded-3xl bg-white p-4 shadow-card'>
                       <Link
                         href={`/resto/${group.restaurant?.id}`}
-                        className='mb-5 flex items-center gap-1 md:gap-2 text-md md:text-lg font-bold md:font-extrabold text-neutral-950 transition-colors hover-dim'
+                        className='mb-5 flex items-center gap-1 md:gap-2 text-md md:text-lg font-bold md:font-extrabold text-neutral-950'
                       >
                         <Image
                           src={StoreIcon}
@@ -146,7 +146,7 @@ export default function CartPage() {
                         </div>
                         <Link
                           href={`/checkout?restaurantId=${group.restaurant?.id}`}
-                          className='h-11 md:h-12 flex items-center justify-center w-full md:w-88 rounded-full bg-primary-100 p-2 text-sm md:text-md tracking-tight-2 text-center font-bold text-neutral-25 transition-colors hover-dim'
+                          className='h-11 md:h-12 flex items-center justify-center w-full md:w-88 rounded-full bg-primary-100 p-2 text-sm md:text-md tracking-tight-2 text-center font-bold text-neutral-25 transition-all duration-500 ease-in-out hover-dim'
                         >
                           Checkout
                         </Link>

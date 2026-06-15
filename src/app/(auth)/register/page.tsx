@@ -47,11 +47,8 @@ function RegisterContent() {
         <div className='flex w-full md:w-1/2 items-center justify-center bg-white py-16'>
           <div
             className='flex w-full flex-col max-w-93.5'
-            style={{
-              gap: 'clamp(16px, 1.569vw + 9.804px, 20px)',
-            }}
+            style={{ gap: 'clamp(16px, 1.569vw + 9.804px, 20px)' }}
           >
-            {/* Logo */}
             <Link href='/'>
               <Image
                 src={LogoColor}
@@ -61,7 +58,6 @@ function RegisterContent() {
               />
             </Link>
 
-            {/* Title */}
             <div className='flex flex-col gap-1'>
               <h1 className='text-display-sm font-extrabold text-neutral-950'>
                 Welcome Back
@@ -74,7 +70,6 @@ function RegisterContent() {
               </p>
             </div>
 
-            {/* Tab switcher */}
             <div className='flex rounded-2xl bg-neutral-100 p-1 gap-1'>
               <Button
                 type='button'
@@ -96,7 +91,6 @@ function RegisterContent() {
               </Button>
             </div>
 
-            {/* Form */}
             {activeTab === 'signin' ? (
               <LoginForm onSwitchTab={() => setActiveTab('signup')} />
             ) : (

@@ -28,11 +28,15 @@ export const queryKeys = {
 } as const;
 
 // ── Restaurants ───────────────────────────────────────────────────────────────
-export function useRestaurants(params?: RestaurantFilter) {
+export function useRestaurants(
+  params?: RestaurantFilter,
+  options?: { enabled?: boolean }
+) {
   return useQuery({
     queryKey: queryKeys.restaurants(params),
     queryFn: () => restoApi.getRestaurants(params),
     staleTime: 1000 * 60 * 5,
+    enabled: options?.enabled ?? true,
   });
 }
 

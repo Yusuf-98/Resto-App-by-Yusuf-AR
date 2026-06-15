@@ -47,7 +47,7 @@ function CartItemRow({
           type='button'
           onClick={() => onUpdate(String(item.id), item.quantity - 1)}
           disabled={isUpdating}
-          className='flex items-center justify-center rounded-full border border-neutral-300 text-neutral-950 shrink-0 disabled:opacity-50'
+          className='flex items-center justify-center rounded-full border border-neutral-300 text-neutral-950 shrink-0 disabled:opacity-50 cursor-pointer transition-all duration-500 ease-in-out hover-dark'
           style={{
             width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
             height: 'clamp(32px, 1.2vw + 27.8px, 40px)',
@@ -70,7 +70,7 @@ function CartItemRow({
           type='button'
           onClick={() => onUpdate(String(item.id), item.quantity + 1)}
           disabled={isUpdating}
-          className='flex items-center justify-center rounded-full bg-primary-100 text-white hover:bg-primary-hover shrink-0 disabled:opacity-50'
+          className='flex items-center justify-center rounded-full bg-primary-100 text-white shrink-0 disabled:opacity-50 cursor-pointer transition-all duration-500 ease-in-out hover-dim'
           style={{
             width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
             height: 'clamp(32px, 1.2vw + 27.8px, 40px)',

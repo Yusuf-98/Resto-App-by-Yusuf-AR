@@ -93,7 +93,7 @@ export function LoginForm({}: LoginFormProps) {
         <input
           {...register('rememberMe')}
           type='checkbox'
-          className='h-5 w-5 appearance-none rounded-sm border-2 border-neutral-300 bg-white checked:border-none checked:bg-primary-100 checked:text-white checked:bg-[url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%2720%206%209%2017%204%2012%27%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")] bg-center bg-no-repeat bg-size-[1rem] focus:ring-red-500 focus:ring-offset-0'
+          className='h-5 w-5 appearance-none rounded-sm border-2 border-neutral-300 bg-white checked:border-none checked:bg-primary-100 checked:text-white checked:bg-[url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%2720%206%209%2017%204%2012%27%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")] bg-center bg-no-repeat bg-size-[1rem] focus:ring-primary-100 focus:ring-offset-0 cursor-pointer'
         />
         <span className='text-sm md:text-md md:tracking-tight-3 font-medium text-neutral-950'>
           Remember Me
@@ -103,7 +103,7 @@ export function LoginForm({}: LoginFormProps) {
         type='submit'
         size='default'
         loading={isLoading}
-        className='w-full'
+        className='w-full transition-all duration-500 ease-in-out hover-dim cursor-pointer'
       >
         Login
       </Button>

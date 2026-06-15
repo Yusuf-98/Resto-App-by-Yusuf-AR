@@ -58,7 +58,7 @@ export function Footer() {
                   key={s.name}
                   href={s.href}
                   aria-label={s.name}
-                  className='w-10 h-10 border border-bs-neutral-800 flex items-center justify-center rounded-full transition-colors hover-dim'
+                  className='w-10 h-10 border border-bs-neutral-800 flex items-center justify-center rounded-full transition-all   duration-500 ease-in-out hover-bg-primary cursor-pointer'
                 >
                   <Image src={s.icon} alt={s.name} className='w-full h-full' />
                 </a>
@@ -78,7 +78,7 @@ export function Footer() {
                 <li key={l.label}>
                   <Link
                     href={l.href}
-                    className='text-sm md:text-md tracking-tight-2 text-center text-neutral-25 transition-colors hover-dim'
+                    className='text-sm md:text-md tracking-tight-2 text-center text-neutral-25 transition-all duration-500 ease-in-out hover-secondary cursor-pointer'
                   >
                     {l.label}
                   </Link>
@@ -97,7 +97,7 @@ export function Footer() {
                 <li key={l.label}>
                   <Link
                     href={l.href}
-                    className='text-sm md:text-md tracking-tight-2 text-center text-neutral-25 transition-colors hover-dim'
+                    className='text-sm md:text-md tracking-tight-2 text-center text-neutral-25 transition-all duration-500 ease-in-out hover-secondary cursor-pointer'
                   >
                     {l.label}
                   </Link>

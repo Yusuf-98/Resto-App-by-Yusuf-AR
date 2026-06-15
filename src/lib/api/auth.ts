@@ -32,6 +32,6 @@ export async function getProfile(): Promise<User> {
 export async function updateProfile(
   payload: Partial<Pick<User, 'name' | 'phone'>>
 ): Promise<User> {
-  const { data } = await apiClient.get('/api/auth/profile');
+  const { data } = await apiClient.put('/api/auth/profile', payload);
   return (data as { data: User }).data ?? (data as User);
 }

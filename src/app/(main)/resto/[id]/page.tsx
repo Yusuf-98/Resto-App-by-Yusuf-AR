@@ -137,14 +137,14 @@ export default function RestoDetailPage({ params }: { params: Params }) {
     resto?.images && resto.images.length > 0 ? resto.images : [placeholder];
 
   return (
-    <div className='relative custom-container pt-20 md:pt-22 lg:pt-32 bg-white'>
+    <div className='relative custom-container pt-20 pb-24 md:pb-27 lg:pb-30 md:pt-22 lg:pt-32 bg-white'>
       {/* Photo grid */}
       {isLoading ? (
-        <div className='h-[280px] mx-auto animate-pulse bg-neutral-200 lg:h-[470px]' />
+        <div className='h-70 mx-auto animate-pulse bg-neutral-200 lg:h-117.5' />
       ) : (
         <>
           {/* Desktop */}
-          <div className='hidden md:h-[420px] lg:h-[470px] grid-cols-[1.11fr_0.89fr] gap-5 overflow-hidden md:grid'>
+          <div className='hidden md:h-105 lg:h-117.5 grid-cols-[1.11fr_0.89fr] gap-5 overflow-hidden md:grid'>
             <FadeInItem index={0} className='relative'>
               <Image
                 src={resto?.images?.[0] ?? placeholder}
@@ -185,7 +185,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
             </div>
           </div>
           {/* Mobile */}
-          <FadeInItem index={0} className='relative h-[260px] md:hidden'>
+          <FadeInItem index={0} className='relative h-65 md:hidden'>
             <div className='absolute inset-0 overflow-hidden rounded-2xl'>
               <AnimatePresence
                 initial={false}
@@ -241,7 +241,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
                     setHeroIndex(i);
                   }}
                   aria-label={`Go to photo ${i + 1}`}
-                  className={`h-2 w-2 cursor-pointer rounded-full transition-colors ${i === heroIndex ? 'bg-primary-100' : 'bg-accent-gray'}`}
+                  className={`h-2 w-2 cursor-pointer rounded-full transition-all duration-500 ease-in-out ${i === heroIndex ? 'bg-primary-100' : 'bg-accent-gray'}`}
                 />
               ))}
             </div>
@@ -291,7 +291,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
           </div>
           <button
             onClick={handleShare}
-            className='w-11 h-11 md:w-35 md:h-11 flex items-center justify-center gap-3 rounded-full border border-neutral-300 bg-white md:px-4 md:py-3 text-sm md:text-md tracking-tight-2 font-bold text-neutral-950 transition-colors hover:bg-neutral-50'
+            className='w-11 h-11 md:w-35 md:h-11 flex items-center justify-center gap-3 rounded-full border border-neutral-300 bg-white md:px-4 md:py-3 text-sm md:text-md tracking-tight-2 font-bold text-neutral-950 transition-all duration-500 ease-in-out hover-dark cursor-pointer'
           >
             <Share2 className='h-5 w-5 md:h-6 md:w-6' />
             <span className='hidden sm:inline'>Share</span>
@@ -310,10 +310,10 @@ export default function RestoDetailPage({ params }: { params: Params }) {
               <button
                 key={tab}
                 onClick={() => handleTabChange(tab)}
-                className={`rounded-full border px-4 py-2 text-sm md:text-md tracking-tight-2 capitalize transition-all cursor-pointer ${
+                className={`rounded-full border px-4 py-2 text-sm md:text-md tracking-tight-2 capitalize transition-all duration-500 ease-in-out cursor-pointer ${
                   activeTab === tab
-                    ? 'border-primary-100 bg-primary-50 text-primary-100 font-bold'
-                    : 'border-neutral-300 bg-white text-neutral-950 hover:border-neutral-600 font-semibold'
+                    ? 'border-primary-100 bg-primary-50 text-primary-100 font-bold hover-bg-primary'
+                    : 'border-neutral-300 bg-white text-neutral-950 hover-dark font-semibold'
                 }`}
               >
                 {tab === 'all'
@@ -342,7 +342,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
                   const itemName = item.foodName ?? item.name ?? 'Menu';
                   return (
                     <FadeInItem key={key} index={idx % 4}>
-                      <div className='flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-300 hover-scale-105 cursor-pointer'>
+                      <div className='flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out hover-scale-105 cursor-pointer'>
                         <div
                           className='relative w-full'
                           style={{ aspectRatio: '1 / 1' }}
@@ -386,7 +386,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
                           {qty === 0 ? (
                             <button
                               onClick={() => handleAdd(item)}
-                              className='w-full h-9 md:w-19.75 lg:h-10 flex items-center justify-center rounded-full bg-primary-100 font-bold text-white transition-colors hover:bg-primary-hover active:scale-[0.98]'
+                              className='w-full h-9 md:w-19.75 lg:h-10 flex items-center justify-center rounded-full bg-primary-100 font-bold text-white transition-all duration-500 ease-in-out hover-dim active:scale-[0.98]'
                               style={{
                                 fontSize: 'clamp(12px, 0.4vw + 10.4px, 16px)',
                               }}
@@ -403,7 +403,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
                             >
                               <button
                                 onClick={() => changeQty(item.id, -1)}
-                                className='flex items-center justify-center rounded-full border border-neutral-300 text-neutral-950 shrink-0'
+                                className='flex items-center justify-center rounded-full border border-neutral-300 text-neutral-950 shrink-0 transition-all  duration-500 ease-in-out hover-dark'
                                 style={{
                                   width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
                                   height: 'clamp(32px, 1.2vw + 27.8px, 40px)',
@@ -426,7 +426,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
                               </span>
                               <button
                                 onClick={() => changeQty(item.id, 1)}
-                                className='flex items-center justify-center rounded-full bg-primary-100 text-white hover:bg-primary-hover shrink-0'
+                                className='flex items-center justify-center rounded-full bg-primary-100 text-white transition-all  duration-500 ease-in-out hover-dim shrink-0'
                                 style={{
                                   width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
                                   height: 'clamp(32px, 1.2vw + 27.8px, 40px)',
@@ -457,7 +457,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
                           : Math.min(filteredMenu.length, prev + 4)
                       )
                     }
-                    className='w-40 h-10 md:h-12 rounded-full border border-neutral-300 p-2 text-sm md:text-md font-bold tracking-tight-2 text-neutral-950 hover-dim'
+                    className='w-40 h-10 md:h-12 rounded-full border border-neutral-300 p-2 text-sm md:text-md font-bold tracking-tight-2 text-neutral-950 transition-all duration-500 ease-in-out hover-dim'
                   >
                     {visibleMenuCount >= filteredMenu.length
                       ? 'Show Less'
@@ -551,7 +551,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
                           : Math.min(allReviews.length, prev + 4)
                       )
                     }
-                    className='w-40 h-10 md:h-12 rounded-full border border-neutral-300 p-2 text-sm md:text-md font-bold tracking-tight-2 text-neutral-950 hover-dim'
+                    className='w-40 h-10 md:h-12 rounded-full border border-neutral-300 p-2 text-sm md:text-md font-bold tracking-tight-2 text-neutral-950 transition-all duration-500 ease-in-out hover-dim'
                   >
                     {visibleReviewCount >= allReviews.length
                       ? 'Show Less'
@@ -581,7 +581,7 @@ export default function RestoDetailPage({ params }: { params: Params }) {
             </div>
             <Link
               href='/cart'
-              className='w-57.5 h-11 flex items-center justify-center shrink-0 rounded-full bg-primary-100 p-2 gap-2 text-md font-bold tracking-tight-2 text-center text-neutral-25 transition-colors hover-dim'
+              className='w-57.5 h-11 flex items-center justify-center shrink-0 rounded-full bg-primary-100 p-2 gap-2 text-md font-bold tracking-tight-2 text-center text-neutral-25 transition-all duration-500 ease-in-out hover-dim'
             >
               Checkout
             </Link>

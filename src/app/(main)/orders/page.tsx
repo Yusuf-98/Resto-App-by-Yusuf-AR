@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import JohnDoe48 from '@/assets/images/john-doe-48.png';
@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatCurrency } from '@/lib/utils';
 import { StarRating } from '@/components/shared/StarRating';
+import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 import { toast } from '@/hooks/use-toast';
 import type { OrderStatus, Order } from '@/types';
 
@@ -49,6 +50,17 @@ export default function OrdersPage() {
         )
       )
     : (orders ?? []);
+
+  useEffect(() => {
+    if (reviewOrder) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [reviewOrder]);
 
   function handleLogout() {
     logout();
@@ -102,9 +114,9 @@ export default function OrdersPage() {
   return (
     <div className='min-h-screen'>
       <div className='custom-container pt-20 md:pt-32 pb-8 md:pb-25'>
-        <div className='flex flex-col gap-8 lg:flex-row'>
+        <div className='flex flex-col gap-8 lg:flex-row lg:items-start'>
           {/* Sidebar */}
-          <aside className='hidden shrink-0 lg:flex'>
+          <aside className='hidden shrink-0 lg:block'>
             <div className='sticky w-60 top-24 rounded-2xl bg-white p-5 shadow-card'>
               <div className='flex items-center gap-2 border-b border-neutral-100 pb-4'>
                 <div className='flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-200'>
@@ -133,7 +145,7 @@ export default function OrdersPage() {
               <nav className='flex flex-col items-start gap-5'>
                 <Link
                   href='/profile'
-                  className='flex items-center gap-2 text-md tracking-tight-3 font-medium text-neutral-950 transition-colors hover-primary'
+                  className='flex items-center gap-2 text-md tracking-tight-3 font-medium text-neutral-950 transition-all duration-500 ease-in-out hover-primary'
                 >
                   <Image
                     src={MarkerPin}
@@ -144,7 +156,7 @@ export default function OrdersPage() {
                 </Link>
                 <Link
                   href='/orders'
-                  className='flex items-center gap-2 text-md tracking-tight-3 font-medium text-neutral-950 transition-colors  hover-primary'
+                  className='flex items-center gap-2 text-md tracking-tight-3 font-medium text-neutral-950 transition-all duration-500 ease-in-out hover-primary'
                 >
                   <Image
                     src={FileMyOrder}
@@ -155,7 +167,7 @@ export default function OrdersPage() {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className='flex items-center gap-2 text-md tracking-tight-3 font-medium text-neutral-950 transition-colors  hover-primary'
+                  className='flex items-center gap-2 text-md tracking-tight-3 font-medium text-neutral-950 transition-all duration-500 ease-in-out hover-primary'
                 >
                   <Image src={LogoutIcon} alt='Logout' className='w-6 h-6' />
                   Logout
@@ -166,145 +178,162 @@ export default function OrdersPage() {
 
           {/* Main */}
           <div className='w-full flex flex-col gap-4 md:gap-6'>
-            <h1 className='text-display-xs md:text-display-md-track font-extrabold text-neutral-950'>
-              My Orders
-            </h1>
+            <FadeInItem index={0}>
+              <h1 className='text-display-xs md:text-display-md-track font-extrabold text-neutral-950'>
+                My Orders
+              </h1>
+            </FadeInItem>
 
-            {/* Search */}
-            <div className='flex flex-col rounded-2xl gap-5 p-4 md:p-6'>
-              <div className='relative'>
-                <Image
-                  src={Search}
-                  alt='Search'
-                  className='absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2'
-                />
-                <input
-                  type='search'
-                  placeholder='Search'
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className='w-full md:w-149.5 h-11 rounded-full border border-neutral-300 bg-white py-2 pl-10 pr-4 text-sm placeholder:text-neutral-600 text-neutral-950 tracking-tight-2 focus:border-primary-100 focus:outline-none focus:ring-1 focus:ring-primary-100/15'
-                />
-              </div>
+            <FadeInItem index={1}>
+              <div className='flex flex-col rounded-2xl gap-5 p-4 md:p-6'>
+                {/* Search */}
+                <div className='relative'>
+                  <Image
+                    src={Search}
+                    alt='Search'
+                    className='absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2'
+                  />
+                  <input
+                    type='search'
+                    placeholder='Search'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className='w-full md:w-149.5 h-11 rounded-full border border-neutral-300 bg-white py-2 pl-10 pr-4 text-sm placeholder:text-neutral-600 text-neutral-950 tracking-tight-2 focus:border-primary-100'
+                  />
+                </div>
 
-              {/* Status tabs */}
-              <div className='flex items-center gap-2 md:gap-3 overflow-x-auto pb-4'>
-                <span className='shrink-0 text-sm md:text-lg tracking-tight-2 md:tracking-tight-3 font-bold text-neutral-950'>
-                  Status
-                </span>
-                {STATUS_TABS.map((tab) => (
-                  <button
-                    key={tab.value}
-                    onClick={() => setActiveStatus(tab.value)}
-                    className={`shrink-0 rounded-full border px-4 py-2 text-sm md:text-md tracking-tight-2 transition-all ${
-                      activeStatus === tab.value
-                        ? 'border-primary-100 font-bold bg-[rgba(255, 236, 236, 1)] text-primary-100 hover-dim'
-                        : 'border-neutral-300 bg-white font-semibold text-neutral-950 hover-dark'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
+                {/* Status tabs */}
+                <div className='flex items-center gap-2 md:gap-3 overflow-x-auto pb-4'>
+                  <span className='shrink-0 text-sm md:text-lg tracking-tight-2 md:tracking-tight-3 font-bold text-neutral-950'>
+                    Status
+                  </span>
+                  {STATUS_TABS.map((tab) => (
+                    <button
+                      key={tab.value}
+                      onClick={() => setActiveStatus(tab.value)}
+                      className={`shrink-0 rounded-full border px-4 py-2 text-sm md:text-md tracking-tight-2 transition-all duration-500 ease-in-out ${
+                        activeStatus === tab.value
+                          ? 'border-primary-100 font-bold bg-[rgba(255, 236, 236, 1)] text-primary-100 hover-dim'
+                          : 'border-neutral-300 bg-white font-semibold text-neutral-950 hover-dark'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
 
-              {/* Orders */}
-              <div className='overflow-hidden rounded-2xl bg-white'>
-                {isLoading ? (
-                  <div className='space-y-4 p-5'>
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className='h-24 animate-pulse rounded-xl bg-neutral-100'
-                      />
-                    ))}
-                  </div>
-                ) : filtered.length === 0 ? (
-                  <div className='flex flex-col items-center justify-center py-20 text-center'>
-                    <span className='mb-3 text-5xl'>📋</span>
-                    <p className='text-base font-bold text-neutral-700'>
-                      No orders found
-                    </p>
-                    <p className='mt-1 text-sm text-neutral-500'>
-                      Your orders will appear here
-                    </p>
-                  </div>
-                ) : (
-                  <div className='divide-y divide-neutral-100'>
-                    {filtered.map((order) => (
-                      <div key={order.id} className='p-5'>
-                        {/* Restaurants in this order */}
-                        {order.restaurants?.map((group, gi) => (
-                          <div key={gi} className='mb-4'>
-                            <div className='flex items-center gap-2 pb-5'>
-                              <Image
-                                src={StoreIcon}
-                                alt='Store'
-                                className='h-8 w-8'
-                              />
-                              <h3 className='font-bold text-sm md:text-lg tracking-tight-2 md:tracking-tight-3 text-neutral-950'>
-                                {group.restaurant?.name}
-                              </h3>
-                            </div>
-                            {group.items?.slice(0, 2).map((item, ii) => (
-                              <div
-                                key={ii}
-                                className='mb-3 flex items-center gap-4'
-                              >
-                                <div className='relative h-16 md:h-20 w-16 md:w-20 shrink-0 overflow-hidden rounded-xl bg-black'>
-                                  <Image
-                                    src={item.image ?? placeholder}
-                                    alt={item.menuName ?? 'Food'}
-                                    fill
-                                    className='object-cover w-full'
-                                    unoptimized
-                                  />
-                                </div>
-                                <div className='flex flex-col justify-center'>
-                                  <p className='h-7 md:h-7.5 flex items-center text-sm md:text-md font-medium md:tracking-tight-3 text-neutral-950'>
-                                    {item.menuName}
-                                  </p>
-                                  <p className='h-7.5 md:h-7.5 text-md md:text-md font-extrabold text-neutral-950'>
-                                    {item.quantity} x{' '}
-                                    {formatCurrency(item.price ?? 0)}
-                                  </p>
-                                </div>
+                {/* Orders */}
+                <div className='overflow-hidden rounded-2xl bg-white'>
+                  {isLoading ? (
+                    <div className='space-y-4 p-5'>
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className='h-24 animate-pulse rounded-xl bg-neutral-100'
+                        />
+                      ))}
+                    </div>
+                  ) : filtered.length === 0 ? (
+                    <div className='flex flex-col items-center justify-center py-20 text-center'>
+                      <span className='mb-3 text-5xl'>📋</span>
+                      <p className='text-base font-bold text-neutral-700'>
+                        No orders found
+                      </p>
+                      <p className='mt-1 text-sm text-neutral-500'>
+                        Your orders will appear here
+                      </p>
+                    </div>
+                  ) : (
+                    <FadeInStagger className='divide-y divide-neutral-100'>
+                      {filtered.map((order, orderIdx) => (
+                        <FadeInItem key={order.id} index={orderIdx}>
+                          <div className='p-5'>
+                            {/* Restaurants in this order */}
+                            {order.restaurants?.map((group, gi) => (
+                              <div key={gi} className='mb-4'>
+                                <FadeInItem index={0}>
+                                  <div className='flex items-center gap-2 pb-5'>
+                                    <Image
+                                      src={StoreIcon}
+                                      alt='Store'
+                                      className='h-8 w-8'
+                                    />
+                                    <h3 className='font-bold text-sm md:text-lg tracking-tight-2 md:tracking-tight-3 text-neutral-950'>
+                                      {group.restaurant?.name}
+                                    </h3>
+                                  </div>
+                                </FadeInItem>
+
+                                <FadeInStagger className='flex flex-col'>
+                                  {group.items?.slice(0, 2).map((item, ii) => (
+                                    <FadeInItem key={ii} index={ii + 1}>
+                                      <div className='mb-3 flex items-center gap-4'>
+                                        <div className='relative h-16 md:h-20 w-16 md:w-20 shrink-0 overflow-hidden rounded-xl bg-black'>
+                                          <Image
+                                            src={item.image ?? placeholder}
+                                            alt={item.menuName ?? 'Food'}
+                                            fill
+                                            className='object-cover w-full'
+                                            unoptimized
+                                          />
+                                        </div>
+                                        <div className='flex flex-col justify-center'>
+                                          <p className='h-7 md:h-7.5 flex items-center text-sm md:text-md font-medium md:tracking-tight-3 text-neutral-950'>
+                                            {item.menuName}
+                                          </p>
+                                          <p className='h-7.5 md:h-7.5 text-md md:text-md font-extrabold text-neutral-950'>
+                                            {item.quantity} x{' '}
+                                            {formatCurrency(item.price ?? 0)}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </FadeInItem>
+                                  ))}
+                                </FadeInStagger>
                               </div>
                             ))}
-                          </div>
-                        ))}
 
-                        <hr className='mt-5 mb-3 border-dashed border-neutral-300' />
+                            <hr className='mt-5 mb-3 border-dashed border-neutral-300' />
 
-                        <div className='flex flex-col justify-center md:flex-row md:items-center md:justify-between mb-3'>
-                          <div className='flex flex-col mb-3'>
-                            <p className='h-7 md:h-7.5 flex items-center text-sm md:text-md md:tracking-tight-3 font-medium text-neutral-950'>
-                              Total
-                            </p>
-                            <p className='h-7.5 md:h-8 text-md md:text-xl font-extrabold text-neutral-950'>
-                              {formatCurrency(
-                                order.pricing?.totalPrice ?? order.total ?? 0
+                            <div className='flex flex-col justify-center md:flex-row md:items-center md:justify-between mb-3'>
+                              <FadeInItem index={0}>
+                                <div className='flex flex-col mb-3'>
+                                  <p className='h-7 md:h-7.5 flex items-center text-sm md:text-md md:tracking-tight-3 font-medium text-neutral-950'>
+                                    Total
+                                  </p>
+                                  <p className='h-7.5 md:h-8 text-md md:text-xl font-extrabold text-neutral-950'>
+                                    {formatCurrency(
+                                      order.pricing?.totalPrice ??
+                                        order.total ??
+                                        0
+                                    )}
+                                  </p>
+                                </div>
+                              </FadeInItem>
+
+                              {activeStatus === 'done' && (
+                                <FadeInItem index={1}>
+                                  <button
+                                    onClick={() => {
+                                      setReviewOrder(order);
+                                      setReviewStar(0);
+                                      setReviewComment('');
+                                    }}
+                                    className='w-full md:w-60 h-11 md:h-12 rounded-full bg-primary-100 flex items-center justify-center gap-2 p-2 text-md tracking-tight-2 font-bold text-neutral-25 transition-all duration-500 ease-in-out hover-dim'
+                                  >
+                                    Give Review
+                                  </button>
+                                </FadeInItem>
                               )}
-                            </p>
+                            </div>
                           </div>
-                          {activeStatus === 'done' && (
-                            <button
-                              onClick={() => {
-                                setReviewOrder(order);
-                                setReviewStar(0);
-                                setReviewComment('');
-                              }}
-                              className='w-full md:w-60 h-11 md:h-12 rounded-full bg-primary-100 flex items-center justify-center gap-2 p-2 text-md md:text-md tracking-tight-2 font-bold text-neutral-25 transition-colors hover-dim'
-                            >
-                              Give Review
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                        </FadeInItem>
+                      ))}
+                    </FadeInStagger>
+                  )}
+                </div>
               </div>
-            </div>
+            </FadeInItem>
           </div>
         </div>
       </div>
@@ -348,12 +377,12 @@ export default function OrdersPage() {
               onChange={(e) => setReviewComment(e.target.value)}
               placeholder='Please share your thoughts about our service!'
               rows={6}
-              className='w-full h-58.75 resize-none rounded-2xl border border-neutral-300 py-2 px-3 text-sm md:text-md tracking-tight-2 text-neutral-950  placeholder:text-neutral-500 mt-2'
+              className='w-full h-58.75 resize-none rounded-2xl border border-neutral-300 py-2 px-3 text-sm md:text-md tracking-tight-2 text-neutral-950 placeholder:text-neutral-500 mt-2'
             />
             <button
               onClick={handleSubmitReview}
               disabled={createReview.isPending}
-              className='h-11 md:h-12 w-full rounded-full bg-primary-100 p-2 text-md tracking-tight-2 font-bold text-neutral-25 transition-colors hover-dim disabled:opacity-60'
+              className='h-11 md:h-12 w-full rounded-full bg-primary-100 p-2 text-md tracking-tight-2 font-bold text-neutral-25 transition-all duration-500 ease-in-out hover-dim disabled:opacity-60'
             >
               {createReview.isPending ? 'Submitting...' : 'Send'}
             </button>

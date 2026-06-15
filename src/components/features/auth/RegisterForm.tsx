@@ -129,7 +129,7 @@ export function RegisterForm({}: RegisterFormProps) {
         type='submit'
         size='default'
         loading={isLoading}
-        className='w-full'
+        className='w-full transition-all duration-500 ease-in-out hover-dim'
       >
         Register
       </Button>

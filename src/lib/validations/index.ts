@@ -44,6 +44,7 @@ export const updateProfileSchema = z.object({
     .string()
     .min(10, 'Nomor HP minimal 10 digit')
     .regex(/^[0-9+\-\s()]+$/, 'Format nomor HP tidak valid'),
+  address: z.string().optional(),
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;

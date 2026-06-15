@@ -29,7 +29,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       Boolean(value || defaultValue)
     );
 
-    // Merge refs
     const mergedRef = (node: HTMLInputElement | null) => {
       (innerRef as React.MutableRefObject<HTMLInputElement | null>).current =
         node;
@@ -45,26 +44,22 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     function handleFocus(e: React.FocusEvent<HTMLInputElement>) {
       setIsFocused(true);
-      // Cek value saat focus
       setHasValue(e.target.value.length > 0);
       onFocus?.(e);
     }
 
     function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
       setIsFocused(false);
-      // Cek value saat blur
       setHasValue(e.target.value.length > 0);
       onBlur?.(e);
     }
 
-    // Sync controlled value
     React.useEffect(() => {
       if (value !== undefined) {
         setHasValue(Boolean(value));
       }
     }, [value]);
 
-    // Cek value dari DOM saat mount (untuk uncontrolled)
     React.useEffect(() => {
       if (innerRef.current) {
         setHasValue(innerRef.current.value.length > 0);
@@ -85,7 +80,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             onBlur={handleBlur}
             ref={mergedRef}
             style={{
-              paddingTop: floated ? '20px' : '0px',
+              paddingTop: floated ? '16px' : '0px',
               paddingBottom: floated ? '4px' : '0px',
               paddingLeft: '12px',
               paddingRight: rightIcon ? '40px' : '12px',
@@ -101,7 +96,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             placeholder={placeholder}
             {...props}
           />
-          {/* Floating label */}
           <label
             style={{
               position: 'absolute',

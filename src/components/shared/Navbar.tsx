@@ -70,7 +70,7 @@ export function Navbar() {
 
   return (
     <header
-      className='fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300'
+      className='fixed top-0 left-0 right-0 z-50 w-full transition-all duration-500 ease-in-out'
       style={{
         backgroundColor: isSolid ? 'var(--color-white)' : 'transparent',
         boxShadow: isSolid ? '0px 0px 20px rgba(203, 202, 202, 0.25)' : 'none',
@@ -101,7 +101,7 @@ export function Navbar() {
               <Link
                 href='/cart'
                 aria-label='Cart'
-                className='relative flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full transition-colors hover:bg-white/10'
+                className='relative flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full transition-all duration-500 ease-in-out'
               >
                 <Image
                   src={isSolid ? BagBlack : BagWhite}
@@ -119,7 +119,7 @@ export function Navbar() {
               <div className='relative' ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className='flex items-center gap-4 rounded-full transition-colors cursor-pointer hover:bg-white/10'
+                  className='flex items-center gap-4 rounded-full transition-all duration-500 ease-in-out cursor-pointer'
                   aria-expanded={dropdownOpen}
                 >
                   {/* Avatar */}
@@ -141,7 +141,7 @@ export function Navbar() {
                   </div>
                   {/* Name — desktop only */}
                   <span
-                    className='hidden max-w-30 truncate text-lg font-semibold transition-colors duration-300 md:block'
+                    className='hidden max-w-30 truncate text-lg font-semibold transition-all duration-500 ease-in-out md:block'
                     style={{
                       color: isSolid
                         ? 'var(--color-neutral-950)'
@@ -182,7 +182,7 @@ export function Navbar() {
                       <Link
                         href='/profile'
                         onClick={() => setDropdownOpen(false)}
-                        className='flex items-center gap-2 text-sm font-medium text-neutral-950 transition-colors hover:bg-neutral-500'
+                        className='flex items-center gap-2 text-sm font-medium text-neutral-950 transition-all duration-500 ease-in-out cursor-pointer hover-primary'
                       >
                         <Image
                           src={MarkerPin}
@@ -194,7 +194,7 @@ export function Navbar() {
                       <Link
                         href='/orders'
                         onClick={() => setDropdownOpen(false)}
-                        className='flex items-center gap-2 text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-500'
+                        className='flex items-center gap-2 text-sm font-medium text-neutral-900 transition-all duration-500 ease-in-out cursor-pointer hover-primary'
                       >
                         <Image
                           src={FileMyOrder}
@@ -205,7 +205,7 @@ export function Navbar() {
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className='flex w-full items-center gap-2 text-sm font-medium text-neutral-950 transition-colors hover:bg-neutral-500'
+                        className='flex w-full items-center gap-2 text-sm font-medium text-neutral-950 transition-all duration-500 ease-in-out cursor-pointer hover-primary'
                       >
                         <Image
                           src={LogoutIcon}
@@ -223,7 +223,7 @@ export function Navbar() {
             <div className='flex items-center gap-3 md:gap-4'>
               <Link
                 href='/login'
-                className={`flex items-center justify-center h-10 md:h-12 w-30 md:w-40.75 bg-transparent rounded-full border-2 p-2 text-sm md:text-md tracking-tight-2 font-bold text-center transition-all duration-300 md:px-5 ${isSolid ? 'hover-dark' : 'hover-light'}`}
+                className={`flex items-center justify-center h-10 md:h-12 w-30 md:w-40.75 bg-transparent rounded-full border-2 p-2 text-sm md:text-md tracking-tight-2 font-bold text-center transition-all duration-500 ease-in-out md:px-5 cursor-pointer ${isSolid ? 'hover-dark' : 'hover-light'}`}
                 style={{
                   borderColor: isSolid
                     ? 'var(--color-neutral-300)'
@@ -237,15 +237,11 @@ export function Navbar() {
               </Link>
               <Link
                 href='/register'
-                className='flex items-center justify-center h-10 md:h-12 w-30 md:w-40.75 rounded-full p-2 gap-2 text-sm md:text-md tracking-tight-2 font-bold text-center transition-all duration-300 md:px-5 hover-dim'
-                style={{
-                  backgroundColor: isSolid
-                    ? 'var(--color-primary-100)'
-                    : 'var(--color-white)',
-                  color: isSolid
-                    ? 'var(--color-white)'
-                    : 'var(--color-neutral-950)',
-                }}
+                className={`flex items-center justify-center h-10 md:h-12 w-30 md:w-40.75 rounded-full p-2 gap-2 text-sm md:text-md tracking-tight-2 font-bold text-center transition-all duration-500 ease-in-out md:px-5 cursor-pointer ${
+                  isSolid
+                    ? 'bg-primary-100 text-white hover-dim'
+                    : 'bg-white text-neutral-950 hover-light-dark hover:text-white'
+                }`}
               >
                 Sign Up
               </Link>

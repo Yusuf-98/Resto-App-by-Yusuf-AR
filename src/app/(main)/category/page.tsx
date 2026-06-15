@@ -30,7 +30,7 @@ function CategoryContent() {
   const [showFilter, setShowFilter] = useState(false);
 
   const apiParams: RestaurantFilter = {
-    ...(category && { category }),
+    ...(category && category !== 'lunch' && { category }),
     ...(priceMin && { priceMin: Number(priceMin) }),
     ...(priceMax && { priceMax: Number(priceMax) }),
     ...(selectedRatings.length > 0 && {
@@ -93,26 +93,32 @@ function CategoryContent() {
   return (
     <div className='custom-container pt-20 md:pt-22 lg:pt-32 pb-12 bg-white'>
       <div className='mx-auto max-w-7xl'>
-        <h1 className='mb-5 md:mb-8 text-display-xs lg:text-display-md-track font-extrabold text-neutral-950'>
-          {title}
-        </h1>
+        <FadeInItem index={0}>
+          <h1 className='mb-5 md:mb-8 text-display-xs lg:text-display-md-track font-extrabold text-neutral-950'>
+            {title}
+          </h1>
+        </FadeInItem>
 
         <div className='flex flex-col gap-5 lg:flex-row lg:gap-8'>
           {/* Filter sidebar - desktop */}
-          <aside className='hidden w-66.5 shrink-0 rounded-xl lg:block'>
-            <div className='sticky top-32 rounded-xl bg-white shadow-card'>
-              <FilterPanel {...filterProps} />
-            </div>
-          </aside>
+          <FadeInItem index={1}>
+            <aside className='hidden w-66.5 shrink-0 rounded-xl lg:block'>
+              <div className='sticky top-32 rounded-xl bg-white shadow-card'>
+                <FilterPanel {...filterProps} />
+              </div>
+            </aside>
+          </FadeInItem>
 
           {/* Filter button - mobile */}
-          <button
-            onClick={() => setShowFilter(true)}
-            className='flex w-full items-center justify-between rounded-xl px-3 md:px-5 py-3 text-sm md:text-md font-extrabold md:tracking-tight-2 text-neutral-950 lg:hidden shadow-card'
-          >
-            FILTER
-            <Image src={FilterLine} alt='' width={20} height={20} />
-          </button>
+          <FadeInItem index={1}>
+            <button
+              onClick={() => setShowFilter(true)}
+              className='flex w-full items-center justify-between rounded-xl px-3 md:px-5 py-3 text-sm md:text-md font-extrabold md:tracking-tight-2 text-neutral-950 lg:hidden shadow-card'
+            >
+              FILTER
+              <Image src={FilterLine} alt='' width={20} height={20} />
+            </button>
+          </FadeInItem>
 
           {/* Results */}
           <div className='flex-1 min-w-0'>
@@ -123,15 +129,17 @@ function CategoryContent() {
                 ))}
               </div>
             ) : restaurants.length === 0 ? (
-              <div className='flex flex-col items-center justify-center py-24 text-center'>
-                <span className='mb-3 text-5xl'>🍽️</span>
-                <p className='text-lg font-bold text-neutral-700'>
-                  No restaurants found
-                </p>
-                <p className='mt-1 text-sm text-neutral-500'>
-                  Try adjusting your filters
-                </p>
-              </div>
+              <FadeInItem index={2}>
+                <div className='flex flex-col items-center justify-center py-24 text-center'>
+                  <span className='mb-3 text-5xl'>🍽️</span>
+                  <p className='text-lg font-bold text-neutral-700'>
+                    No restaurants found
+                  </p>
+                  <p className='mt-1 text-sm text-neutral-500'>
+                    Try adjusting your filters
+                  </p>
+                </div>
+              </FadeInItem>
             ) : (
               <FadeInStagger className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
                 {restaurants.map((r, idx) => (

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import JohnDoe48 from '@/assets/images/john-doe-48.png';
 
 interface ChangeAddressModalProps {
   initialAddress: string;
@@ -41,11 +42,7 @@ export function ChangeAddressModal({
           <h2 className='text-xl font-extrabold text-neutral-950'>
             Change Address
           </h2>
-          <button
-            type='button'
-            onClick={onClose}
-            className='text-neutral-500 hover:text-neutral-900'
-          >
+          <button type='button' onClick={onClose} className='text-neutral-500'>
             <X className='h-5 w-5' />
           </button>
         </div>
@@ -61,9 +58,7 @@ export function ChangeAddressModal({
                 unoptimized
               />
             ) : (
-              <div className='flex h-full w-full items-center justify-center text-2xl font-bold text-neutral-400'>
-                ?
-              </div>
+              <Image src={JohnDoe48} alt='User' fill className='object-cover' />
             )}
           </div>
         </div>
@@ -89,13 +84,18 @@ export function ChangeAddressModal({
         <div className='mt-6 flex gap-3'>
           <Button
             type='button'
-            variant='outline'
+            variant='borderfull'
             className='flex-1'
             onClick={onClose}
           >
             Cancel
           </Button>
-          <Button type='button' className='flex-1' onClick={handleOk}>
+          <Button
+            type='button'
+            variant='default'
+            className='flex-1'
+            onClick={handleOk}
+          >
             OK
           </Button>
         </div>
