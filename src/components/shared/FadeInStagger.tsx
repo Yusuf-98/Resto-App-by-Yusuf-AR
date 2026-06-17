@@ -35,7 +35,7 @@ export function FadeInItem({
         delay: Math.min(index * 0.15, 0.6),
         ease: [0.25, 0.1, 0.25, 1],
       }}
-      className={className}
+      className={`opacity-0 ${className}`}
     >
       {children}
     </motion.div>
