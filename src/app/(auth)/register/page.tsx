@@ -30,7 +30,7 @@ function RegisterContent() {
   if (isAuthenticated) return null;
 
   return (
-    <div className='flex min-h-screen w-full justify-center'>
+    <div className='custom-container flex min-h-screen justify-center p-4'>
       <div className='flex w-full max-w-360'>
         {/* --- Hero Image --- */}
         <div
