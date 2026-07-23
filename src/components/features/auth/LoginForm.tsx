@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { loginSchema, type LoginFormValues } from '@/lib/validations';
 import { login } from '@/lib/api/auth';
-import { useAuthStore } from '@/store/auth.store';
+import { useAuthStore, setRememberMe } from '@/store/auth.store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
@@ -39,6 +39,7 @@ export function LoginForm({}: LoginFormProps) {
       const token = res.data?.token ?? res.token ?? res.access_token ?? '';
       const user = res.data?.user ?? res.user;
       if (!token || !user) throw new Error('Invalid response');
+      setRememberMe(values.rememberMe ?? true);
       setAuth(token, user);
       toast({ title: 'Login berhasil!', variant: 'success' });
       router.push('/');

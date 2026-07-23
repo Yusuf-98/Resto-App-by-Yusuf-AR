@@ -1,8 +1,34 @@
 'use client';
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { User } from '@/types';
+
+// --- Remember Me Storage ---
+// true (default) = persist across browser restarts (localStorage)
+// false = persist only for the current tab session (sessionStorage)
+let persistAcrossRestarts = true;
+
+export function setRememberMe(value: boolean) {
+  persistAcrossRestarts = value;
+}
+
+const rememberAwareStorage = createJSONStorage(() => ({
+  getItem: (name) => localStorage.getItem(name) ?? sessionStorage.getItem(name),
+  setItem: (name, value) => {
+    if (persistAcrossRestarts) {
+      localStorage.setItem(name, value);
+      sessionStorage.removeItem(name);
+    } else {
+      sessionStorage.setItem(name, value);
+      localStorage.removeItem(name);
+    }
+  },
+  removeItem: (name) => {
+    localStorage.removeItem(name);
+    sessionStorage.removeItem(name);
+  },
+}));
 
 // --- Auth Store Types ---
 interface AuthState {
@@ -46,6 +72,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'foody_auth',
+      storage: rememberAwareStorage,
       partialize: (state) => ({
         token: state.token,
         user: state.user,

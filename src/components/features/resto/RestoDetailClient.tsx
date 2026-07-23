@@ -8,7 +8,12 @@ import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Share2, Plus, Minus } from 'lucide-react';
 import BagBlack from '@/assets/icons/bag-black.png';
 import StarIcon from '@/assets/icons/star.png';
-import { useAddToCart } from '@/lib/query/hooks';
+import {
+  useCart,
+  useAddToCart,
+  useUpdateCartItem,
+  useDeleteCartItem,
+} from '@/hooks/queries/cart';
 import { useAuthStore } from '@/store/auth.store';
 import { formatCurrency, formatDate, getDummyDistance } from '@/lib/utils';
 import { StarRating } from '@/components/shared/StarRating';
@@ -44,14 +49,23 @@ export default function RestoDetailClient({
 
   // --- UI State ---
   const [activeTab, setActiveTab] = useState<'all' | 'food' | 'drink'>('all');
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [visibleMenuCount, setVisibleMenuCount] = useState(4);
   const [visibleReviewCount, setVisibleReviewCount] = useState(4);
   const [heroIndex, setHeroIndex] = useState(0);
   const [heroDirection, setHeroDirection] = useState(0);
+  const [pendingKey, setPendingKey] = useState<string | null>(null);
 
   // --- Data ---
+  const { data: cartGroups } = useCart();
   const addToCart = useAddToCart();
+  const updateCartItem = useUpdateCartItem();
+  const deleteCartItem = useDeleteCartItem();
+  const cartGroup = cartGroups?.find(
+    (g) => String(g.restaurant?.id) === String(id)
+  );
+  const cartItemsByMenuId = new Map(
+    (cartGroup?.items ?? []).map((ci) => [String(ci.menu?.id ?? ci.menuId), ci])
+  );
   const rating = resto?.star ?? resto?.rating ?? resto?.averageRating;
   const location = resto?.place ?? resto?.location;
   const allMenu = resto?.menus ?? resto?.menu ?? [];
@@ -67,44 +81,53 @@ export default function RestoDetailClient({
   const heroImages =
     resto?.images && resto.images.length > 0 ? resto.images : [placeholder];
 
-  const totalItems = Object.values(quantities).reduce((s, q) => s + q, 0);
-  const totalPrice = allMenu.reduce(
-    (s, m) => s + (quantities[String(m.id)] ?? 0) * m.price,
+  const totalItems = (cartGroup?.items ?? []).reduce(
+    (s, i) => s + i.quantity,
+    0
+  );
+  const totalPrice = (cartGroup?.items ?? []).reduce(
+    (s, i) => s + (i.menu?.price ?? 0) * i.quantity,
     0
   );
 
   // --- Handlers ---
-  function changeQty(menuId: string | number, delta: number) {
-    const key = String(menuId);
-    setQuantities((p) => ({
-      ...p,
-      [key]: Math.max(0, (p[key] ?? 0) + delta),
-    }));
-  }
-
   function handleTabChange(tab: 'all' | 'food' | 'drink') {
     setActiveTab(tab);
     setVisibleMenuCount(4);
   }
 
-  async function handleAdd(item: MenuItem) {
+  async function changeQty(item: MenuItem, delta: number) {
     if (!isAuthenticated) {
       router.push('/login');
       return;
     }
     const key = String(item.id);
-    setQuantities((p) => ({ ...p, [key]: 1 }));
+    const existing = cartItemsByMenuId.get(key);
+    const nextQty = Math.max(0, (existing?.quantity ?? 0) + delta);
+    if (nextQty === (existing?.quantity ?? 0)) return;
+
+    setPendingKey(key);
     try {
-      await addToCart.mutateAsync({
-        restaurantId: Number(id),
-        menuId: Number(item.id),
-        quantity: 1,
-      });
-      const name = item.foodName ?? item.name ?? 'Item';
-      toast({ title: `${name} ditambahkan ke cart`, variant: 'success' });
+      if (existing && nextQty === 0) {
+        await deleteCartItem.mutateAsync(String(existing.id));
+      } else if (existing) {
+        await updateCartItem.mutateAsync({
+          id: String(existing.id),
+          quantity: nextQty,
+        });
+      } else {
+        await addToCart.mutateAsync({
+          restaurantId: Number(id),
+          menuId: Number(item.id),
+          quantity: nextQty,
+        });
+        const name = item.foodName ?? item.name ?? 'Item';
+        toast({ title: `${name} ditambahkan ke cart`, variant: 'success' });
+      }
     } catch {
-      toast({ title: 'Gagal menambah ke cart', variant: 'error' });
-      setQuantities((p) => ({ ...p, [key]: 0 }));
+      toast({ title: 'Gagal memperbarui cart', variant: 'error' });
+    } finally {
+      setPendingKey(null);
     }
   }
 
@@ -306,7 +329,8 @@ export default function RestoDetailClient({
               <FadeInStagger className='grid grid-cols-2 gap-5 md:gap-5 md:grid-cols-3 lg:grid-cols-4'>
                 {displayMenu.map((item, idx) => {
                   const key = String(item.id ?? idx);
-                  const qty = quantities[key] ?? 0;
+                  const qty = cartItemsByMenuId.get(key)?.quantity ?? 0;
+                  const isPending = pendingKey === key;
                   const itemName = item.foodName ?? item.name ?? 'Menu';
                   return (
                     <FadeInItem key={key} index={idx % 4}>
@@ -353,8 +377,9 @@ export default function RestoDetailClient({
                           {/* --- Add to Cart / Quantity Stepper --- */}
                           {qty === 0 ? (
                             <button
-                              onClick={() => handleAdd(item)}
-                              className='w-full h-9 md:w-19.75 lg:h-10 flex items-center justify-center rounded-full bg-primary-100 font-bold text-white transition-all duration-500 ease-in-out hover-dim active:scale-[0.98]'
+                              onClick={() => changeQty(item, 1)}
+                              disabled={isPending}
+                              className='w-full h-9 md:w-19.75 lg:h-10 flex items-center justify-center rounded-full bg-primary-100 font-bold text-white transition-all duration-500 ease-in-out hover-dim active:scale-[0.98] disabled:opacity-50'
                               style={{
                                 fontSize: 'clamp(12px, 0.4vw + 10.4px, 16px)',
                               }}
@@ -370,8 +395,9 @@ export default function RestoDetailClient({
                               }}
                             >
                               <button
-                                onClick={() => changeQty(item.id, -1)}
-                                className='flex items-center justify-center rounded-full border border-neutral-300 text-neutral-950 shrink-0 transition-all duration-500 ease-in-out hover-dark'
+                                onClick={() => changeQty(item, -1)}
+                                disabled={isPending}
+                                className='flex items-center justify-center rounded-full border border-neutral-300 text-neutral-950 shrink-0 transition-all duration-500 ease-in-out hover-dark disabled:opacity-50'
                                 style={{
                                   width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
                                   height: 'clamp(32px, 1.2vw + 27.8px, 40px)',
@@ -393,8 +419,9 @@ export default function RestoDetailClient({
                                 {qty}
                               </span>
                               <button
-                                onClick={() => changeQty(item.id, 1)}
-                                className='flex items-center justify-center rounded-full bg-primary-100 text-white transition-all duration-500 ease-in-out hover-dim shrink-0'
+                                onClick={() => changeQty(item, 1)}
+                                disabled={isPending}
+                                className='flex items-center justify-center rounded-full bg-primary-100 text-white transition-all duration-500 ease-in-out hover-dim shrink-0 disabled:opacity-50'
                                 style={{
                                   width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
                                   height: 'clamp(32px, 1.2vw + 27.8px, 40px)',

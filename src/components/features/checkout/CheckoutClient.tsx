@@ -12,7 +12,12 @@ import CheckUnticked from '@/assets/icons/checkround-unticked.png';
 import StoreIcon from '@/assets/icons/store.png';
 import LogoColor from '@/assets/images/logo-color.png';
 import SuccesGreen from '@/assets/icons/success-green.png';
-import { useCart, useCheckout, useDeleteCartItem } from '@/lib/query/hooks';
+import {
+  useCart,
+  useUpdateCartItem,
+  useDeleteCartItem,
+} from '@/hooks/queries/cart';
+import { useCheckout } from '@/hooks/queries/order';
 import { useRequireAuth } from '@/hooks/use-auth-guard';
 import { useAuthStore } from '@/store/auth.store';
 import { useUIStore } from '@/store/ui.store';
@@ -53,6 +58,7 @@ export function CheckoutClient() {
   // --- Data Fetching ---
   const { data: cartGroups, isLoading } = useCart();
   const checkout = useCheckout();
+  const updateItem = useUpdateCartItem();
   const deleteItem = useDeleteCartItem();
 
   // --- UI Store ---
@@ -60,7 +66,7 @@ export function CheckoutClient() {
     useUIStore();
 
   // --- UI State ---
-  const [localQty, setLocalQty] = useState<Record<string, number>>({});
+  const [pendingId, setPendingId] = useState<string | null>(null);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -114,12 +120,7 @@ export function CheckoutClient() {
 
   const subtotal = targetGroups.reduce(
     (sum, g) =>
-      sum +
-      g.items.reduce(
-        (s, i) =>
-          s + (i.menu?.price ?? 0) * (localQty[String(i.id)] ?? i.quantity),
-        0
-      ),
+      sum + g.items.reduce((s, i) => s + (i.menu?.price ?? 0) * i.quantity, 0),
     0
   );
   const total = subtotal + DELIVERY_FEE + SERVICE_FEE;
@@ -129,6 +130,22 @@ export function CheckoutClient() {
   const placeholder =
     'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&q=80';
 
+  // --- Cart Item Handlers ---
+  async function handleUpdateQty(id: string, qty: number) {
+    setPendingId(id);
+    try {
+      if (qty < 1) {
+        await deleteItem.mutateAsync(id);
+      } else {
+        await updateItem.mutateAsync({ id, quantity: qty });
+      }
+    } catch {
+      toast({ title: 'Gagal memperbarui cart', variant: 'error' });
+    } finally {
+      setPendingId(null);
+    }
+  }
+
   // --- Submit Handler ---
   async function onSubmit(values: CheckoutFormValues) {
     if (!targetGroups.length) {
@@ -136,12 +153,12 @@ export function CheckoutClient() {
       return;
     }
     try {
-      await checkout.mutateAsync({
+      const order = await checkout.mutateAsync({
         restaurants: targetGroups.map((g) => ({
           restaurantId: Number(g.restaurant.id),
           items: g.items.map((i) => ({
             menuId: Number(i.menu?.id),
-            quantity: localQty[String(i.id)] ?? i.quantity,
+            quantity: i.quantity,
           })),
         })),
         deliveryAddress: values.deliveryAddress,
@@ -156,7 +173,6 @@ export function CheckoutClient() {
       );
       await Promise.all(itemsToDelete.map((id) => deleteItem.mutateAsync(id)));
 
-      setLocalQty({});
       setPaymentSuccess({
         date: new Date()
           .toLocaleString('id-ID', {
@@ -171,10 +187,10 @@ export function CheckoutClient() {
         paymentMethod:
           PAYMENT_METHODS.find((p) => p.id === values.paymentMethod)?.name ??
           values.paymentMethod,
-        subtotal,
-        deliveryFee: DELIVERY_FEE,
-        serviceFee: SERVICE_FEE,
-        total,
+        subtotal: order.pricing?.subtotal ?? subtotal,
+        deliveryFee: order.pricing?.deliveryFee ?? DELIVERY_FEE,
+        serviceFee: order.pricing?.serviceFee ?? SERVICE_FEE,
+        total: order.pricing?.totalPrice ?? total,
       });
     } catch (err: unknown) {
       const msg =
@@ -278,24 +294,15 @@ export function CheckoutClient() {
 
                         {/* --- Item List --- */}
                         <div className='flex flex-col gap-3 md:gap-5 py-2.5'>
-                          {group.items.map((item) => {
-                            const key = String(item.id);
-                            const qty = localQty[key] ?? item.quantity;
-                            return (
-                              <CartItemRow
-                                key={item.id}
-                                item={{ ...item, quantity: qty }}
-                                placeholder={placeholder}
-                                isUpdating={false}
-                                onUpdate={(id, newQty) =>
-                                  setLocalQty((p) => ({
-                                    ...p,
-                                    [id]: Math.max(1, newQty),
-                                  }))
-                                }
-                              />
-                            );
-                          })}
+                          {group.items.map((item) => (
+                            <CartItemRow
+                              key={item.id}
+                              item={item}
+                              placeholder={placeholder}
+                              isUpdating={pendingId === String(item.id)}
+                              onUpdate={handleUpdateQty}
+                            />
+                          ))}
                         </div>
                       </div>
                     </FadeInItem>

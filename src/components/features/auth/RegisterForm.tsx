@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { registerSchema, type RegisterFormValues } from '@/lib/validations';
 import { register as registerUser } from '@/lib/api/auth';
-import { useAuthStore } from '@/store/auth.store';
+import { useAuthStore, setRememberMe } from '@/store/auth.store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
@@ -41,6 +41,7 @@ export function RegisterForm({}: RegisterFormProps) {
       const token = res.data?.token ?? res.token ?? res.access_token ?? '';
       const user = res.data?.user ?? res.user;
       if (!token || !user) throw new Error('Invalid response');
+      setRememberMe(true);
       setAuth(token, user);
       toast({ title: 'Registrasi berhasil!', variant: 'success' });
       router.push('/');
