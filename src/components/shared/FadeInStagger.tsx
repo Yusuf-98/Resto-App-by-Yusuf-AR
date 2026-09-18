@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { FadeInStaggerProps, FadeInItemProps } from '@/types';
 
+// --- Fade In Stagger Container ---
 export function FadeInStagger({ children, className }: FadeInStaggerProps) {
   return (
     <div className={className}>
@@ -12,6 +13,7 @@ export function FadeInStagger({ children, className }: FadeInStaggerProps) {
   );
 }
 
+// --- Fade In Item ---
 export function FadeInItem({
   children,
   className,

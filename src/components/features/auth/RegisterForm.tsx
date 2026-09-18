@@ -17,10 +17,12 @@ import { RegisterFormProps } from '@/types';
 export function RegisterForm({}: RegisterFormProps) {
   const router = useRouter();
   const { setAuth } = useAuthStore();
+  // --- UI State ---
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // --- Form ---
   const {
     register,
     handleSubmit,
@@ -29,6 +31,7 @@ export function RegisterForm({}: RegisterFormProps) {
     resolver: zodResolver(registerSchema),
   });
 
+  // --- Submit Handler ---
   async function onSubmit(values: RegisterFormValues) {
     setIsLoading(true);
     try {

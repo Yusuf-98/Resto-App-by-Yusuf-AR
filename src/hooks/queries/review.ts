@@ -3,6 +3,7 @@ import * as reviewApi from '@/lib/api/review';
 import type { ReviewPayload } from '@/types';
 import { queryKeys } from './keys';
 
+// --- Create Review ---
 export function useCreateReview() {
   const qc = useQueryClient();
   return useMutation({
@@ -14,6 +15,7 @@ export function useCreateReview() {
   });
 }
 
+// --- Get My Reviews ---
 export function useMyReviews() {
   return useQuery({
     queryKey: queryKeys.myReviews(),

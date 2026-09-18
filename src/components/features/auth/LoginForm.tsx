@@ -17,9 +17,11 @@ import { LoginFormProps } from '@/types';
 export function LoginForm({}: LoginFormProps) {
   const router = useRouter();
   const { setAuth } = useAuthStore();
+  // --- UI State ---
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // --- Form ---
   const {
     register,
     handleSubmit,
@@ -29,6 +31,7 @@ export function LoginForm({}: LoginFormProps) {
     defaultValues: { email: '', password: '', rememberMe: false },
   });
 
+  // --- Submit Handler ---
   async function onSubmit(values: LoginFormValues) {
     setIsLoading(true);
     try {

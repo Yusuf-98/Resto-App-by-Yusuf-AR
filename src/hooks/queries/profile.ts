@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as authApi from '@/lib/api/auth';
 import { queryKeys } from './keys';
 
+// --- Get Profile ---
 export function useProfile() {
   return useQuery({
     queryKey: queryKeys.profile(),
@@ -10,6 +11,7 @@ export function useProfile() {
   });
 }
 
+// --- Update Profile ---
 export function useUpdateProfile() {
   const qc = useQueryClient();
   return useMutation({

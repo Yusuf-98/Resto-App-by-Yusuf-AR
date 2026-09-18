@@ -3,6 +3,7 @@ import * as orderApi from '@/lib/api/order';
 import type { OrderStatus, CheckoutPayload } from '@/types';
 import { queryKeys } from './keys';
 
+// --- Get My Orders ---
 export function useMyOrders(params?: {
   status?: OrderStatus;
   page?: number;
@@ -15,6 +16,7 @@ export function useMyOrders(params?: {
   });
 }
 
+// --- Checkout ---
 export function useCheckout() {
   const qc = useQueryClient();
   return useMutation({

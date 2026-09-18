@@ -23,12 +23,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
+    // --- UI State ---
     const innerRef = React.useRef<HTMLInputElement>(null);
     const [isFocused, setIsFocused] = React.useState(false);
     const [hasValue, setHasValue] = React.useState(
       Boolean(value || defaultValue)
     );
 
+    // --- Handlers ---
     const mergedRef = (node: HTMLInputElement | null) => {
       (innerRef as React.MutableRefObject<HTMLInputElement | null>).current =
         node;
@@ -54,6 +56,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onBlur?.(e);
     }
 
+    // --- Sync Effects ---
     React.useEffect(() => {
       if (value !== undefined) {
         setHasValue(Boolean(value));
@@ -66,6 +69,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       }
     }, []);
 
+    // --- Derived Data ---
     const floated = isFocused || hasValue;
 
     return (

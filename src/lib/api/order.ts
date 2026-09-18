@@ -1,12 +1,14 @@
 import apiClient from './axios';
 import type { CheckoutPayload, Order, OrderStatus } from '@/types';
 
+// --- Checkout ---
 export async function checkout(payload: CheckoutPayload): Promise<Order> {
   const { data } = await apiClient.post('/api/order/checkout', payload);
   const d = data as { data?: { transaction?: Order } };
   return d.data?.transaction ?? (data as Order);
 }
 
+// --- Get My Orders ---
 export async function getMyOrders(params?: {
   status?: OrderStatus;
   page?: number;

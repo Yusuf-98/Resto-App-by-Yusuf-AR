@@ -3,6 +3,7 @@ import { useAuthStore } from '@/store/auth.store';
 import * as cartApi from '@/lib/api/cart';
 import { queryKeys } from './keys';
 
+// --- Get Cart ---
 export function useCart() {
   const { isAuthenticated } = useAuthStore();
   return useQuery({
@@ -13,6 +14,7 @@ export function useCart() {
   });
 }
 
+// --- Add To Cart ---
 export function useAddToCart() {
   const qc = useQueryClient();
   return useMutation({
@@ -21,6 +23,7 @@ export function useAddToCart() {
   });
 }
 
+// --- Update Cart Item ---
 export function useUpdateCartItem() {
   const qc = useQueryClient();
   return useMutation({
@@ -30,6 +33,7 @@ export function useUpdateCartItem() {
   });
 }
 
+// --- Delete Cart Item ---
 export function useDeleteCartItem() {
   const qc = useQueryClient();
   return useMutation({
@@ -38,6 +42,7 @@ export function useDeleteCartItem() {
   });
 }
 
+// --- Clear Cart ---
 export function useClearCart() {
   const qc = useQueryClient();
   return useMutation({

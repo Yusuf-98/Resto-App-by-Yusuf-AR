@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/auth.store';
 import type { RestaurantFilter } from '@/types';
 import { queryKeys } from './keys';
 
+// --- Get Restaurants ---
 export function useRestaurants(
   params?: RestaurantFilter,
   options?: { enabled?: boolean }
@@ -16,6 +17,7 @@ export function useRestaurants(
   });
 }
 
+// --- Get Restaurant Detail ---
 export function useRestaurantDetail(id: string) {
   return useQuery({
     queryKey: queryKeys.restaurantDetail(id),
@@ -26,6 +28,7 @@ export function useRestaurantDetail(id: string) {
   });
 }
 
+// --- Search Restaurants ---
 export function useRestaurantSearch(q: string) {
   return useQuery({
     queryKey: queryKeys.restaurantSearch(q),
@@ -35,6 +38,7 @@ export function useRestaurantSearch(q: string) {
   });
 }
 
+// --- Get Best Sellers ---
 export function useBestSellers(params?: { page?: number; limit?: number }) {
   return useQuery({
     queryKey: queryKeys.bestSellers(params),
@@ -43,6 +47,7 @@ export function useBestSellers(params?: { page?: number; limit?: number }) {
   });
 }
 
+// --- Get Recommended ---
 export function useRecommended(params?: { page?: number; limit?: number }) {
   const { isAuthenticated } = useAuthStore();
   return useQuery({
@@ -54,6 +59,7 @@ export function useRecommended(params?: { page?: number; limit?: number }) {
   });
 }
 
+// --- Get Nearby ---
 export function useNearby(
   params?: { range?: number; limit?: number },
   enabled = true

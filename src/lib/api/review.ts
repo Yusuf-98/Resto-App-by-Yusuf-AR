@@ -1,11 +1,13 @@
 import apiClient from './axios';
 import type { Review, ReviewPayload } from '@/types';
 
+// --- Create Review ---
 export async function createReview(payload: ReviewPayload): Promise<Review> {
   const { data } = await apiClient.post('/api/review', payload);
   return (data as { data: Review }).data ?? (data as Review);
 }
 
+// --- Get My Reviews ---
 export async function getMyReviews(): Promise<Review[]> {
   const { data } = await apiClient.get('/api/review/my-reviews');
   if (Array.isArray(data)) return data as Review[];
@@ -18,6 +20,7 @@ export async function getMyReviews(): Promise<Review[]> {
   return [];
 }
 
+// --- Get Restaurant Reviews ---
 export async function getRestaurantReviews(
   restaurantId: string
 ): Promise<Review[]> {

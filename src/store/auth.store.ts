@@ -5,8 +5,6 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { User } from '@/types';
 
 // --- Remember Me Storage ---
-// true (default) = persist across browser restarts (localStorage)
-// false = persist only for the current tab session (sessionStorage)
 let persistAcrossRestarts = true;
 
 export function setRememberMe(value: boolean) {

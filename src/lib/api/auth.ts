@@ -6,6 +6,7 @@ import type {
   User,
 } from '@/types';
 
+// --- Login ---
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
   const { data } = await apiClient.post<AuthResponse>(
     '/api/auth/login',
@@ -14,6 +15,7 @@ export async function login(payload: LoginPayload): Promise<AuthResponse> {
   return data;
 }
 
+// --- Register ---
 export async function register(
   payload: RegisterPayload
 ): Promise<AuthResponse> {
@@ -24,11 +26,13 @@ export async function register(
   return data;
 }
 
+// --- Get Profile ---
 export async function getProfile(): Promise<User> {
   const { data } = await apiClient.get('/api/auth/profile');
   return (data as { data: User }).data ?? (data as User);
 }
 
+// --- Update Profile ---
 export async function updateProfile(
   payload: Partial<Pick<User, 'name' | 'phone'>> & {
     avatar?: File;

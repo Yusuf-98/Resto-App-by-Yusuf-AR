@@ -24,13 +24,17 @@ const TRANSPARENT_PAGES = ['/'];
 export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
+  // --- Auth State ---
   const { isAuthenticated, user, logout } = useAuthStore();
+  // --- Data Fetching ---
   const { data: cartGroups } = useCart();
   const qc = useQueryClient();
+  // --- UI State ---
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // --- Derived Data ---
   const isHomePage = TRANSPARENT_PAGES.includes(pathname ?? '');
   const isSolid = scrolled || !isHomePage;
 
@@ -40,6 +44,7 @@ export function Navbar() {
       0
     ) ?? 0;
 
+  // --- Scroll Effect ---
   useEffect(() => {
     function handleScroll() {
       setScrolled(window.scrollY > 10);
@@ -48,6 +53,7 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // --- Outside Click Effect ---
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (
@@ -61,6 +67,7 @@ export function Navbar() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  // --- Logout Handler ---
   function handleLogout() {
     logout();
     qc.clear();

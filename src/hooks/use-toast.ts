@@ -14,6 +14,7 @@ interface ToastState {
 
 type ToastInput = Omit<ToastState, 'id' | 'open'>;
 
+// --- Toast State (Module) ---
 let count = 0;
 type Listener = (toasts: ToastState[]) => void;
 const listeners: Listener[] = [];
@@ -24,6 +25,7 @@ function dispatch(state: ToastState[]) {
   listeners.forEach((l) => l(state));
 }
 
+// --- Emit Toast ---
 export function toast(input: ToastInput) {
   const id = String(++count);
   dispatch([...memToasts, { ...input, id, open: true }]);
@@ -32,6 +34,7 @@ export function toast(input: ToastInput) {
   }, 3500);
 }
 
+// --- useToast Hook ---
 export function useToast() {
   const [toasts, setToasts] = React.useState<ToastState[]>(memToasts);
 

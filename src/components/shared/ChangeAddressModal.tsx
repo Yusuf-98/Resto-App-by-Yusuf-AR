@@ -15,10 +15,12 @@ export function ChangeAddressModal({
   onClose,
   onSave,
 }: ChangeAddressModalProps) {
+  // --- UI State ---
   const [address, setAddress] = useState(initialAddress);
   const [phone, setPhone] = useState(initialPhone);
   const [error, setError] = useState('');
 
+  // --- Submit Handler ---
   function handleOk() {
     if (address.trim().length < 10) {
       setError('Alamat minimal 10 karakter');

@@ -5,12 +5,14 @@ const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   'https://be-restaurant-production.up.railway.app';
 
+// --- API Client Setup ---
 const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: { 'Content-Type': 'application/json' },
   timeout: 15000,
 });
 
+// --- Attach Auth Token ---
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = useAuthStore.getState().token;
@@ -22,6 +24,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// --- Handle 401 Unauthorized ---
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
