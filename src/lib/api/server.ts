@@ -1,22 +1,27 @@
+import type { Restaurant } from '@/types';
+
 // --- Server-Side Fetch Utilities ---
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   'https://be-restaurant-production.up.railway.app';
 
 // --- Normalize API Response to Array ---
-function toArray(data: unknown): any[] {
+function toArray(data: unknown): Restaurant[] {
   if (!data) return [];
-  if (Array.isArray(data)) return data;
+  if (Array.isArray(data)) return data as Restaurant[];
   const d = data as Record<string, unknown>;
   if (d.data && typeof d.data === 'object') {
     const inner = d.data as Record<string, unknown>;
-    if (Array.isArray(inner.recommendations)) return inner.recommendations;
-    if (Array.isArray(inner.restaurants)) return inner.restaurants;
+    if (Array.isArray(inner.recommendations))
+      return inner.recommendations as Restaurant[];
+    if (Array.isArray(inner.restaurants))
+      return inner.restaurants as Restaurant[];
   }
-  if (Array.isArray(d.data)) return d.data;
-  if (Array.isArray(d.restaurants)) return d.restaurants;
-  if (Array.isArray(d.recommendations)) return d.recommendations;
-  if (Array.isArray(d.items)) return d.items;
+  if (Array.isArray(d.data)) return d.data as Restaurant[];
+  if (Array.isArray(d.restaurants)) return d.restaurants as Restaurant[];
+  if (Array.isArray(d.recommendations))
+    return d.recommendations as Restaurant[];
+  if (Array.isArray(d.items)) return d.items as Restaurant[];
   return [];
 }
 
