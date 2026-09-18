@@ -69,7 +69,7 @@ function LoginContent() {
                 Welcome Back
               </h1>
               <p className='text-sm md:text-md md:tracking-tight-3 font-medium text-neutral-950'>
-                Good to see you again! Let's eat
+                Good to see you again! Let&apos;s eat
               </p>
             </div>
 

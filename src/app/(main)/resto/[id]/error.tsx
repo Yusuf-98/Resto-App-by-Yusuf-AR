@@ -19,7 +19,7 @@ export default function RestoDetailError({
         Restaurant not found
       </h2>
       <p className='text-md text-neutral-500'>
-        The restaurant you're looking for doesn't exist or failed to load.
+        The restaurant you&apos;re looking for doesn&apos;t exist or failed to load.
       </p>
 
       {/* --- Actions --- */}
