@@ -59,7 +59,7 @@ export default function ProfilePage() {
       });
       setUser(profileData);
     }
-  }, [profileData, reset, setUser]);
+  }, [profileData, reset, setUser, storeUser?.address]);
 
   // --- Lock Scroll on Modal ---
   useEffect(() => {
