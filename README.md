@@ -88,6 +88,10 @@ npm run lint     # run ESLint
 
 This app consumes a REST API for restaurants, cart, orders, reviews, and auth. See the [Swagger docs](https://be-restaurant-production.up.railway.app/api-swagger/) for the full contract.
 
+## Author
+
+Built by [Yusuf AR](https://github.com/Yusuf-98).
+
 ## License
 
 Licensed under the [MIT License](LICENSE).
