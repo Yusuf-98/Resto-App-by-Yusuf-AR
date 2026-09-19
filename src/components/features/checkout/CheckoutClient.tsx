@@ -19,6 +19,7 @@ import {
 } from '@/hooks/queries/cart';
 import { useCheckout } from '@/hooks/queries/order';
 import { useRequireAuth } from '@/hooks/use-auth-guard';
+import { useModalA11y } from '@/hooks/use-modal-a11y';
 import { useAuthStore } from '@/store/auth.store';
 import { useUIStore } from '@/store/ui.store';
 import { formatCurrency } from '@/lib/utils';
@@ -96,17 +97,11 @@ export function CheckoutClient() {
     if (user?.phone) setValue('phone', user.phone);
   }, [user?.address, user?.phone, setValue, hasHydrated]);
 
-  // --- Lock Scroll on Success Modal ---
-  useEffect(() => {
-    if (paymentSuccessData) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [paymentSuccessData]);
+  // --- Modal Accessibility ---
+  const successDialogRef = useModalA11y(
+    !!paymentSuccessData,
+    clearPaymentSuccess
+  );
 
   if (!hasHydrated) return null;
   if (!isAuthenticated) return null;
@@ -466,7 +461,14 @@ export function CheckoutClient() {
 
       {/* --- Payment Success Modal --- */}
       {paymentSuccessData && (
-        <div className='fixed inset-0 z-250 flex flex-col items-center justify-center bg-white'>
+        <div
+          ref={successDialogRef}
+          role='dialog'
+          aria-modal='true'
+          aria-labelledby='payment-success-title'
+          tabIndex={-1}
+          className='fixed inset-0 z-250 flex flex-col items-center justify-center bg-white outline-none'
+        >
           <FadeInItem index={0}>
             <Image
               src={LogoColor}
@@ -485,7 +487,10 @@ export function CheckoutClient() {
                     className='h-16 w-16'
                   />
                 </div>
-                <h1 className='h-8 md:h-8.5 text-lg md:text-xl tracking-tight-2 md:tracking-none font-extrabold text-neutral-950 mt-1.75'>
+                <h1
+                  id='payment-success-title'
+                  className='h-8 md:h-8.5 text-lg md:text-xl tracking-tight-2 md:tracking-none font-extrabold text-neutral-950 mt-1.75'
+                >
                   Payment Success
                 </h1>
                 <p className='h-7 md:h-7.5 text-center text-sm md:text-md tracking-tight-2 text-neutral-950 mt-0.5 md:mt-0'>
