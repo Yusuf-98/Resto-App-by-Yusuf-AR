@@ -8,6 +8,7 @@ import CloseFilter from '@/assets/icons/close-filter.png';
 import { RestaurantCard } from '@/components/shared/RestaurantCard';
 import { RestaurantCardSkeleton } from '@/components/shared/Skeletons';
 import { FilterPanel } from '@/components/shared/FilterPanel';
+import { useModalA11y } from '@/hooks/use-modal-a11y';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 import type { Restaurant } from '@/types';
@@ -35,6 +36,9 @@ export function CategoryClient({
 
   // --- UI State ---
   const [showFilter, setShowFilter] = useState(false);
+
+  // --- Modal Accessibility ---
+  const filterDialogRef = useModalA11y(showFilter, () => setShowFilter(false));
 
   // --- URL Updater ---
   const updateParam = useCallback(
@@ -151,7 +155,12 @@ export function CategoryClient({
               transition={{ duration: 0.25 }}
             />
             <motion.div
-              className='absolute inset-y-0 left-0 w-[76%] max-w-sm overflow-y-auto py-4 bg-white'
+              ref={filterDialogRef}
+              role='dialog'
+              aria-modal='true'
+              aria-label='Filter'
+              tabIndex={-1}
+              className='absolute inset-y-0 left-0 w-[76%] max-w-sm overflow-y-auto py-4 bg-white outline-none'
               initial={{ x: '-100%', opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: '-100%', opacity: 0 }}
