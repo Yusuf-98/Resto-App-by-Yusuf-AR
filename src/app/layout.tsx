@@ -10,6 +10,8 @@ const nunito = Nunito({
   display: 'swap',
 });
 
+const BASE_URL = 'https://resto-app-by-yusuf-ar.vercel.app';
+
 export const metadata: Metadata = {
   title: {
     default: 'Foody — Explore Culinary Experiences',
@@ -20,6 +22,17 @@ export const metadata: Metadata = {
   keywords: ['food', 'restaurant', 'order', 'delivery'],
 };
 
+// --- Organization JSON-LD ---
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Foody',
+  url: BASE_URL,
+  logo: `${BASE_URL}/icon.png`,
+  description:
+    'Search and refine your choice to discover the perfect restaurant.',
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -28,6 +41,10 @@ export default function RootLayout({
   return (
     <html lang='id' suppressHydrationWarning>
       <body className={nunito.className}>
+        <script
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
         <Providers>
           {children}
           <Toaster />
