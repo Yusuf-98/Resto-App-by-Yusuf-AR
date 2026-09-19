@@ -49,7 +49,7 @@ describe('LoginForm', () => {
     const passwordInput = screen.getByPlaceholderText('Password');
     expect(passwordInput).toHaveAttribute('type', 'password');
 
-    await user.click(screen.getByRole('button', { name: '' }));
+    await user.click(screen.getByRole('button', { name: 'Show password' }));
     expect(passwordInput).toHaveAttribute('type', 'text');
   });
 

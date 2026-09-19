@@ -79,8 +79,8 @@ export function LoginForm({}: LoginFormProps) {
           <button
             type='button'
             onClick={() => setShowPassword(!showPassword)}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
             className='text-neutral-950'
-            tabIndex={-1}
           >
             {showPassword ? (
               <Eye className='h-4 w-4' />
