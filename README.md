@@ -4,6 +4,7 @@ A full-featured restaurant ordering web app built with Next.js. Users can browse
 
 **Live Demo:** [resto-app-by-yusuf-ar.vercel.app](https://resto-app-by-yusuf-ar.vercel.app/)
 
+![CI](https://github.com/Yusuf-98/Resto-App-by-Yusuf-AR/actions/workflows/ci.yml/badge.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss)
