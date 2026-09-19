@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
-import { Share2, Plus, Minus } from 'lucide-react';
+import { Share2, Plus, Minus, X } from 'lucide-react';
 import BagBlack from '@/assets/icons/bag-black.png';
 import StarIcon from '@/assets/icons/star.png';
 import {
@@ -15,6 +15,7 @@ import {
   useDeleteCartItem,
 } from '@/hooks/queries/cart';
 import { useAuthStore } from '@/store/auth.store';
+import { useModalA11y } from '@/hooks/use-modal-a11y';
 import { formatCurrency, formatDate, getDummyDistance } from '@/lib/utils';
 import { StarRating } from '@/components/shared/StarRating';
 import { toast } from '@/hooks/use-toast';
@@ -58,6 +59,12 @@ export default function RestoDetailClient({
   const [heroIndex, setHeroIndex] = useState(0);
   const [heroDirection, setHeroDirection] = useState(0);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
+  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem | null>(
+    null
+  );
+  const menuDialogRef = useModalA11y(!!selectedMenuItem, () =>
+    setSelectedMenuItem(null)
+  );
 
   // --- Data ---
   const { data: cartGroups } = useCart();
@@ -70,6 +77,11 @@ export default function RestoDetailClient({
   const cartItemsByMenuId = new Map(
     (cartGroup?.items ?? []).map((ci) => [String(ci.menu?.id ?? ci.menuId), ci])
   );
+  const selectedKey = selectedMenuItem ? String(selectedMenuItem.id) : null;
+  const selectedQty = selectedKey
+    ? (cartItemsByMenuId.get(selectedKey)?.quantity ?? 0)
+    : 0;
+  const selectedPending = selectedKey ? pendingKey === selectedKey : false;
   const rating = resto?.star ?? resto?.rating ?? resto?.averageRating;
   const location = resto?.place ?? resto?.location;
   const allMenu = resto?.menus ?? resto?.menu ?? [];
@@ -371,7 +383,18 @@ export default function RestoDetailClient({
                   const itemName = item.foodName ?? item.name ?? 'Menu';
                   return (
                     <FadeInItem key={key} index={idx % 4}>
-                      <div className='flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out hover-scale-105 cursor-pointer'>
+                      <div
+                        role='button'
+                        tabIndex={0}
+                        onClick={() => setSelectedMenuItem(item)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setSelectedMenuItem(item);
+                          }
+                        }}
+                        className='flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-500 ease-in-out hover-scale-105 cursor-pointer'
+                      >
                         <div
                           className='relative w-full'
                           style={{ aspectRatio: '1 / 1' }}
@@ -412,6 +435,7 @@ export default function RestoDetailClient({
                           </div>
 
                           {/* --- Add to Cart / Quantity Stepper --- */}
+                          <div onClick={(e) => e.stopPropagation()}>
                           {qty === 0 ? (
                             <button
                               onClick={() => changeQty(item, 1)}
@@ -473,6 +497,7 @@ export default function RestoDetailClient({
                               </button>
                             </div>
                           )}
+                          </div>
                         </div>
                       </div>
                     </FadeInItem>
@@ -619,6 +644,91 @@ export default function RestoDetailClient({
             >
               Checkout
             </Link>
+          </div>
+        </div>
+      )}
+
+      {/* --- Menu Item Detail Modal --- */}
+      {selectedMenuItem && (
+        <div
+          className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'
+          onClick={() => setSelectedMenuItem(null)}
+        >
+          <div
+            ref={menuDialogRef}
+            role='dialog'
+            aria-modal='true'
+            aria-labelledby='menu-item-title'
+            tabIndex={-1}
+            onClick={(e) => e.stopPropagation()}
+            className='w-full max-w-md overflow-hidden rounded-2xl bg-white outline-none'
+          >
+            <div className='relative w-full' style={{ aspectRatio: '1 / 1' }}>
+              <Image
+                src={selectedMenuItem.image ?? placeholder}
+                alt={
+                  selectedMenuItem.foodName ?? selectedMenuItem.name ?? 'Menu'
+                }
+                fill
+                sizes='(max-width: 768px) 100vw, 448px'
+                className='object-cover'
+                unoptimized
+              />
+              <button
+                onClick={() => setSelectedMenuItem(null)}
+                aria-label='Close'
+                className='absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-neutral-950'
+              >
+                <X className='h-5 w-5' />
+              </button>
+            </div>
+            <div className='flex flex-col gap-3 p-5'>
+              <h2
+                id='menu-item-title'
+                className='text-xl font-extrabold text-neutral-950'
+              >
+                {selectedMenuItem.foodName ?? selectedMenuItem.name ?? 'Menu'}
+              </h2>
+              <p className='text-lg font-extrabold text-neutral-950'>
+                {formatCurrency(selectedMenuItem.price)}
+              </p>
+              {selectedMenuItem.description && (
+                <p className='text-sm text-neutral-500'>
+                  {selectedMenuItem.description}
+                </p>
+              )}
+
+              {/* --- Add to Cart / Quantity Stepper --- */}
+              {selectedQty === 0 ? (
+                <button
+                  onClick={() => changeQty(selectedMenuItem, 1)}
+                  disabled={selectedPending}
+                  className='mt-2 h-11 w-full rounded-full bg-primary-100 font-bold text-white transition-all duration-500 ease-in-out hover-dim active:scale-[0.98] disabled:opacity-50'
+                >
+                  Add
+                </button>
+              ) : (
+                <div className='mt-2 flex items-center justify-between'>
+                  <button
+                    onClick={() => changeQty(selectedMenuItem, -1)}
+                    disabled={selectedPending}
+                    className='flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300 text-neutral-950 transition-all duration-500 ease-in-out hover-dark disabled:opacity-50'
+                  >
+                    <Minus className='h-5 w-5' />
+                  </button>
+                  <span className='text-lg font-semibold tracking-tight-2 text-neutral-950'>
+                    {selectedQty}
+                  </span>
+                  <button
+                    onClick={() => changeQty(selectedMenuItem, 1)}
+                    disabled={selectedPending}
+                    className='flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-white transition-all duration-500 ease-in-out hover-dim disabled:opacity-50'
+                  >
+                    <Plus className='h-5 w-5' />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
