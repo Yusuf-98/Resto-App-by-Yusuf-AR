@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useProfile, useUpdateProfile } from '@/hooks/queries/profile';
 import { useAuthStore } from '@/store/auth.store';
 import { useRequireAuth } from '@/hooks/use-auth-guard';
+import { useModalA11y } from '@/hooks/use-modal-a11y';
 import { useQueryClient } from '@tanstack/react-query';
 import JohnDoe48 from '@/assets/images/john-doe-48.png';
 import MarkerPin from '@/assets/icons/marker-pin.png';
@@ -61,17 +62,8 @@ export default function ProfilePage() {
     }
   }, [profileData, reset, setUser, storeUser?.address]);
 
-  // --- Lock Scroll on Modal ---
-  useEffect(() => {
-    if (showModal) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [showModal]);
+  // --- Modal Accessibility ---
+  const dialogRef = useModalA11y(showModal, () => setShowModal(false));
 
   // --- Handlers ---
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -280,17 +272,26 @@ export default function ProfilePage() {
           onClick={() => setShowModal(false)}
         >
           <div
-            className='w-full max-w-90.25 md:max-w-109.75 flex flex-col gap-4 md:gap-7 rounded-2xl bg-white p-4 md:p-6'
+            ref={dialogRef}
+            role='dialog'
+            aria-modal='true'
+            aria-labelledby='update-profile-title'
+            tabIndex={-1}
+            className='w-full max-w-90.25 md:max-w-109.75 flex flex-col gap-4 md:gap-7 rounded-2xl bg-white p-4 md:p-6 outline-none'
             onClick={(e) => e.stopPropagation()}
           >
             {/* --- Modal Header --- */}
             <div className='flex items-center justify-between'>
-              <h2 className='text-xl md:text-display-xs font-extrabold text-neutral-950'>
+              <h2
+                id='update-profile-title'
+                className='text-xl md:text-display-xs font-extrabold text-neutral-950'
+              >
                 Update Profile
               </h2>
               <button
                 type='button'
                 onClick={() => setShowModal(false)}
+                aria-label='Close'
                 className='flex h-7 w-7 items-center justify-center transition-all duration-500 ease-in-out hover-dim'
               >
                 <Image src={XClose} alt='Close' className='h-5 w-5' />
