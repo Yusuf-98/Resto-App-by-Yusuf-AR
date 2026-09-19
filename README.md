@@ -85,6 +85,14 @@ npm run start    # run the production build
 npm run lint     # run ESLint
 ```
 
+## Testing
+
+```bash
+npm run test:run
+```
+
+Runs the Vitest suite once (formatting/validation utilities, the auth store, toasts, the Input floating label, and the Login/Register forms). Use `npm run test` for watch mode.
+
 ## API
 
 This app consumes a REST API for restaurants, cart, orders, reviews, and auth. See the [Swagger docs](https://be-restaurant-production.up.railway.app/api-swagger/) for the full contract.
