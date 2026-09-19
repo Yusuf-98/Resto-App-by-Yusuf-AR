@@ -6,7 +6,7 @@ A full-featured restaurant ordering web app built with Next.js. Users can browse
 
 🚀 **Live demo:** https://resto-app-by-yusuf-ar.vercel.app/
 
-![Home](docs/screenshots/02-home.png)
+![Hero section](docs/screenshots/00-hero.png)
 
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
