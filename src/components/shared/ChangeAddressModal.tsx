@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useModalA11y } from '@/hooks/use-modal-a11y';
 import JohnDoe48 from '@/assets/images/john-doe-48.png';
 import { ChangeAddressModalProps } from '@/types';
 
@@ -15,6 +16,8 @@ export function ChangeAddressModal({
   onClose,
   onSave,
 }: ChangeAddressModalProps) {
+  const dialogRef = useModalA11y(true, onClose);
+
   // --- UI State ---
   const [address, setAddress] = useState(initialAddress);
   const [phone, setPhone] = useState(initialPhone);
@@ -32,12 +35,27 @@ export function ChangeAddressModal({
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-      <div className='w-full max-w-md rounded-2xl bg-white p-6 shadow-xl'>
+      <div
+        ref={dialogRef}
+        role='dialog'
+        aria-modal='true'
+        aria-labelledby='change-address-title'
+        tabIndex={-1}
+        className='w-full max-w-md rounded-2xl bg-white p-6 shadow-xl outline-none'
+      >
         <div className='mb-5 flex items-center justify-between'>
-          <h2 className='text-xl font-extrabold text-neutral-950'>
+          <h2
+            id='change-address-title'
+            className='text-xl font-extrabold text-neutral-950'
+          >
             Change Address
           </h2>
-          <button type='button' onClick={onClose} className='text-neutral-500'>
+          <button
+            type='button'
+            onClick={onClose}
+            aria-label='Close'
+            className='text-neutral-500'
+          >
             <X className='h-5 w-5' />
           </button>
         </div>
