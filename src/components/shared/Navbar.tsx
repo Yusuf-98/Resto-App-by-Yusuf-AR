@@ -33,6 +33,7 @@ export function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
 
   // --- Derived Data ---
   const isHomePage = TRANSPARENT_PAGES.includes(pathname ?? '');
@@ -66,6 +67,19 @@ export function Navbar() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  // --- Escape Key Effect ---
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    function handler(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setDropdownOpen(false);
+        dropdownTriggerRef.current?.focus();
+      }
+    }
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [dropdownOpen]);
 
   // --- Logout Handler ---
   function handleLogout() {
@@ -125,6 +139,7 @@ export function Navbar() {
               {/* User dropdown */}
               <div className='relative' ref={dropdownRef}>
                 <button
+                  ref={dropdownTriggerRef}
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className='flex items-center gap-4 rounded-full transition-all duration-500 ease-in-out cursor-pointer'
                   aria-expanded={dropdownOpen}
