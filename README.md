@@ -1,10 +1,13 @@
 # Foody — Resto App
 
+[![CI](https://github.com/Yusuf-98/Resto-App-by-Yusuf-AR/actions/workflows/ci.yml/badge.svg)](https://github.com/Yusuf-98/Resto-App-by-Yusuf-AR/actions/workflows/ci.yml)
+
 A full-featured restaurant ordering web app built with Next.js. Users can browse restaurants, filter and search by category/price/rating/distance, view menus and reviews, manage a cart, check out with multiple payment methods, and track order history.
 
-**Live Demo:** [resto-app-by-yusuf-ar.vercel.app](https://resto-app-by-yusuf-ar.vercel.app/)
+🚀 **Live demo:** https://resto-app-by-yusuf-ar.vercel.app/
 
-![CI](https://github.com/Yusuf-98/Resto-App-by-Yusuf-AR/actions/workflows/ci.yml/badge.svg)
+![Home](docs/screenshots/02-home.png)
+
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss)
