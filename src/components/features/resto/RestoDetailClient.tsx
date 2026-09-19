@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -20,6 +20,9 @@ import { StarRating } from '@/components/shared/StarRating';
 import { toast } from '@/hooks/use-toast';
 import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 import type { RestaurantDetail, MenuItem } from '@/types';
+
+// --- Menu Tabs ---
+const MENU_TABS = ['all', 'food', 'drink'] as const;
 
 // --- Hero Slide Animation Variants ---
 const heroSlideVariants: Variants = {
@@ -48,6 +51,7 @@ export default function RestoDetailClient({
   const { isAuthenticated } = useAuthStore();
 
   // --- UI State ---
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [activeTab, setActiveTab] = useState<'all' | 'food' | 'drink'>('all');
   const [visibleMenuCount, setVisibleMenuCount] = useState(4);
   const [visibleReviewCount, setVisibleReviewCount] = useState(4);
@@ -94,6 +98,21 @@ export default function RestoDetailClient({
   function handleTabChange(tab: 'all' | 'food' | 'drink') {
     setActiveTab(tab);
     setVisibleMenuCount(4);
+  }
+
+  function handleTabKeyDown(e: React.KeyboardEvent, index: number) {
+    let nextIndex: number;
+    if (e.key === 'ArrowRight') nextIndex = (index + 1) % MENU_TABS.length;
+    else if (e.key === 'ArrowLeft')
+      nextIndex = (index - 1 + MENU_TABS.length) % MENU_TABS.length;
+    else if (e.key === 'Home') nextIndex = 0;
+    else if (e.key === 'End') nextIndex = MENU_TABS.length - 1;
+    else return;
+
+    e.preventDefault();
+    const nextTab = MENU_TABS[nextIndex];
+    handleTabChange(nextTab);
+    tabRefs.current[nextTab]?.focus();
   }
 
   async function changeQty(item: MenuItem, delta: number) {
@@ -301,11 +320,24 @@ export default function RestoDetailClient({
           </h2>
 
           {/* --- Menu Tabs --- */}
-          <div className='flex gap-2 md:gap-3'>
-            {(['all', 'food', 'drink'] as const).map((tab) => (
+          <div
+            role='tablist'
+            aria-label='Menu category'
+            className='flex gap-2 md:gap-3'
+          >
+            {MENU_TABS.map((tab, index) => (
               <button
                 key={tab}
+                ref={(el) => {
+                  tabRefs.current[tab] = el;
+                }}
+                role='tab'
+                id={`menu-tab-${tab}`}
+                aria-selected={activeTab === tab}
+                aria-controls='menu-tabpanel'
+                tabIndex={activeTab === tab ? 0 : -1}
                 onClick={() => handleTabChange(tab)}
+                onKeyDown={(e) => handleTabKeyDown(e, index)}
                 className={`rounded-full border px-4 py-2 text-sm md:text-md tracking-tight-2 capitalize transition-all duration-500 ease-in-out cursor-pointer ${
                   activeTab === tab
                     ? 'border-primary-100 bg-primary-50 text-primary-100 font-bold hover-bg-primary'
@@ -320,6 +352,11 @@ export default function RestoDetailClient({
           </div>
 
           {/* --- Menu Grid --- */}
+          <div
+            role='tabpanel'
+            id='menu-tabpanel'
+            aria-labelledby={`menu-tab-${activeTab}`}
+          >
           {filteredMenu.length === 0 ? (
             <p className='py-12 text-center text-neutral-500'>
               No menu items in this category
@@ -462,6 +499,7 @@ export default function RestoDetailClient({
               )}
             </>
           )}
+          </div>
         </section>
 
         <hr className='border-neutral-300 my-4 lg:my-2' />
