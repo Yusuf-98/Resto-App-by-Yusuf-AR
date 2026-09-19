@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import JohnDoe48 from '@/assets/images/john-doe-48.png';
@@ -13,6 +13,7 @@ import XClose from '@/assets/icons/x-close.png';
 import { useMyOrders } from '@/hooks/queries/order';
 import { useCreateReview } from '@/hooks/queries/review';
 import { useRequireAuth } from '@/hooks/use-auth-guard';
+import { useModalA11y } from '@/hooks/use-modal-a11y';
 import { useAuthStore } from '@/store/auth.store';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
@@ -59,17 +60,8 @@ export function OrdersClient() {
       )
     : (orders ?? []);
 
-  // --- Lock Scroll on Review Modal ---
-  useEffect(() => {
-    if (reviewOrder) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [reviewOrder]);
+  // --- Modal Accessibility ---
+  const dialogRef = useModalA11y(!!reviewOrder, () => setReviewOrder(null));
 
   // --- Handlers ---
   function handleLogout() {
@@ -364,16 +356,25 @@ export function OrdersClient() {
           onClick={() => setReviewOrder(null)}
         >
           <div
-            className='w-full max-w-90.25 md:max-w-109.75 flex flex-col gap-4 md:gap-7 rounded-2xl bg-white p-4 md:p-6'
+            ref={dialogRef}
+            role='dialog'
+            aria-modal='true'
+            aria-labelledby='give-review-title'
+            tabIndex={-1}
+            className='w-full max-w-90.25 md:max-w-109.75 flex flex-col gap-4 md:gap-7 rounded-2xl bg-white p-4 md:p-6 outline-none'
             onClick={(e) => e.stopPropagation()}
           >
             {/* --- Modal Header --- */}
             <div className='flex items-center justify-between'>
-              <h2 className='text-xl md:text-display-xs font-extrabold text-neutral-950'>
+              <h2
+                id='give-review-title'
+                className='text-xl md:text-display-xs font-extrabold text-neutral-950'
+              >
                 Give Review
               </h2>
               <button
                 onClick={() => setReviewOrder(null)}
+                aria-label='Close'
                 className='flex h-7 w-7 items-center justify-center hover-dim'
               >
                 <Image src={XClose} alt='Close' className='h-5 w-5' />
