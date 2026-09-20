@@ -1,5 +1,6 @@
 import { Minus, Plus } from 'lucide-react';
 import Image from 'next/image';
+import { isUnoptimizedSrc } from '@/lib/image-hosts';
 import { formatCurrency } from '@/lib/utils';
 import type { CartItem } from '@/types';
 
@@ -23,7 +24,8 @@ function CartItemRow({
             alt={item.menu?.foodName ?? 'Food'}
             fill
             className='object-cover'
-            unoptimized
+            sizes='(min-width: 768px) 80px, 64px'
+            unoptimized={isUnoptimizedSrc(item.menu?.image)}
           />
         </div>
         <div className='flex flex-col justify-center'>
