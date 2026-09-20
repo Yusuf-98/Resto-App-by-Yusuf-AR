@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { isUnoptimizedSrc } from '@/lib/image-hosts';
 import StarIcon from '@/assets/icons/star.png';
 import { getDummyDistance } from '@/lib/utils';
 import { RestaurantCardProps } from '@/types';
@@ -29,7 +30,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             width={120}
             height={120}
             className='w-full h-full object-cover'
-            unoptimized
+            unoptimized={isUnoptimizedSrc(restaurant.logo)}
           />
         ) : (
           <span className='text-4xl'>🍔</span>
