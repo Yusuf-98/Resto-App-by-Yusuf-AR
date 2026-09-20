@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { isUnoptimizedSrc } from '@/lib/image-hosts';
 import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -68,7 +69,8 @@ export function ChangeAddressModal({
                 alt='Avatar'
                 fill
                 className='object-cover'
-                unoptimized
+                sizes='64px'
+                unoptimized={isUnoptimizedSrc(avatar)}
               />
             ) : (
               <Image src={JohnDoe48} alt='User' fill className='object-cover' />
