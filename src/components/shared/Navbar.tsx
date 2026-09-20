@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { isUnoptimizedSrc } from '@/lib/image-hosts';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { useAuthStore } from '@/store/auth.store';
@@ -153,7 +154,7 @@ export function Navbar() {
                         width={48}
                         height={48}
                         className='h-full w-full object-cover'
-                        unoptimized
+                        unoptimized={isUnoptimizedSrc(user.avatar)}
                       />
                     ) : (
                       <Image
@@ -188,7 +189,7 @@ export function Navbar() {
                             width={48}
                             height={48}
                             className='h-full w-full object-cover'
-                            unoptimized
+                            unoptimized={isUnoptimizedSrc(user.avatar)}
                           />
                         ) : (
                           <Image
