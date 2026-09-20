@@ -13,6 +13,11 @@ import { Button } from '@/components/ui/button';
 import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 import { useHomeSearch } from './HomeSearchProvider';
 
+// --- Recommended Section Limit ---
+// /api/resto/recommended ignores the limit query param (no pagination
+// support), so the cap has to be enforced client-side.
+const RECOMMENDED_LIMIT = 12;
+
 // --- Restaurant List Section ---
 export function RestaurantListSection() {
   const { query } = useHomeSearch();
@@ -27,7 +32,7 @@ export function RestaurantListSection() {
     limit: 24,
   });
   const { data: recommended, isLoading: loadingRec } = useRecommended({
-    limit: 12,
+    limit: RECOMMENDED_LIMIT,
   });
   const { data: searchResults, isLoading: loadingSearch } =
     useRestaurantSearch(query);
@@ -38,7 +43,7 @@ export function RestaurantListSection() {
     ? (searchResults ?? [])
     : !_hasHydrated || showAll || !isAuthenticated
       ? (allRestos ?? [])
-      : (recommended ?? []);
+      : (recommended ?? []).slice(0, RECOMMENDED_LIMIT);
   const isLoadingMain = isSearching
     ? loadingSearch
     : showAll || !isAuthenticated
