@@ -239,6 +239,7 @@ export interface FadeInItemProps {
   children: ReactNode;
   className?: string;
   index?: number;
+  eager?: boolean;
 }
 
 // ── Filter Panel ───────────────────────────────────────────────────────────────────
