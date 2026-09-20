@@ -1,33 +1,12 @@
 import type { NextConfig } from 'next';
+import { OPTIMIZED_IMAGE_HOSTS } from './src/lib/image-hosts';
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'be-restaurant-production.up.railway.app',
-      },
-      {
-        protocol: 'https',
-        hostname: '**.railway.app',
-      },
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-      },
-      {
-        protocol: 'http',
-        hostname: '**',
-      },
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+    remotePatterns: OPTIMIZED_IMAGE_HOSTS.map((hostname) => ({
+      protocol: 'https' as const,
+      hostname,
+    })),
   },
 };
 
