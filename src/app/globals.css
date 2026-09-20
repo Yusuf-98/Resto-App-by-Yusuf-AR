@@ -303,6 +303,49 @@ body {
   animation: fadeInUp 0.35s ease-out forwards;
 }
 
+/* ── Entrance (FadeInItem) ─────────────────── */
+@keyframes fade-in-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+}
+.fade-in-hidden {
+  opacity: 0;
+  transform: translateY(60px);
+}
+.fade-in-visible {
+  transition:
+    opacity 1s cubic-bezier(0.25, 0.1, 0.25, 1) var(--fade-delay, 0s),
+    transform 1s cubic-bezier(0.25, 0.1, 0.25, 1) var(--fade-delay, 0s);
+}
+.fade-in-eager {
+  animation: fade-in-entrance 1s cubic-bezier(0.25, 0.1, 0.25, 1)
+    var(--fade-delay, 0s) backwards;
+}
+
+/* ── Filter drawer entrance (mobile) ───────── */
+@keyframes drawer-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes drawer-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+.drawer-backdrop-in {
+  animation: drawer-fade-in 0.25s cubic-bezier(0.25, 0.1, 0.35, 1);
+}
+.drawer-panel-in {
+  animation: drawer-slide-in 0.3s cubic-bezier(0.42, 0, 0.58, 1);
+}
+.drawer-close-in {
+  animation: drawer-fade-in 0.2s cubic-bezier(0.25, 0.1, 0.35, 1);
+}
+
 /* ── Autofill Input ────────────────────────── */
 input:-webkit-autofill + label,
 input:-webkit-autofill ~ label {
