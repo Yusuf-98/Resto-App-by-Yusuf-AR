@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import Image from 'next/image';
+import { isUnoptimizedSrc } from '@/lib/image-hosts';
 import { useRouter } from 'next/navigation';
 import { useProfile, useUpdateProfile } from '@/hooks/queries/profile';
 import { useAuthStore } from '@/store/auth.store';
@@ -132,7 +133,7 @@ export default function ProfilePage() {
                       width={48}
                       height={48}
                       className='h-full w-full object-cover rounded-full'
-                      unoptimized
+                      unoptimized={isUnoptimizedSrc(user.avatar)}
                     />
                   ) : (
                     <Image
@@ -204,7 +205,7 @@ export default function ProfilePage() {
                       width={64}
                       height={64}
                       className='h-full w-full object-cover'
-                      unoptimized
+                      unoptimized={isUnoptimizedSrc(user.avatar)}
                     />
                   ) : (
                     <Image
@@ -322,7 +323,7 @@ export default function ProfilePage() {
                       width={64}
                       height={64}
                       className='h-full w-full object-cover'
-                      unoptimized
+                      unoptimized={isUnoptimizedSrc(user.avatar)}
                     />
                   ) : (
                     <Image
