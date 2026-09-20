@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import Image from 'next/image';
+import { isUnoptimizedSrc } from '@/lib/image-hosts';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
@@ -179,7 +180,7 @@ export default function RestoDetailClient({
     <div className='relative custom-container pt-20 pb-24 md:pb-27 lg:pb-30 md:pt-22 lg:pt-32 bg-white'>
       {/* --- Hero Images (Desktop) --- */}
       <div className='hidden md:h-105 lg:h-117.5 grid-cols-[1.11fr_0.89fr] gap-5 overflow-hidden md:grid'>
-        <FadeInItem index={0} className='relative'>
+        <FadeInItem index={0} eager className='relative'>
           <Image
             src={resto?.images?.[0] ?? placeholder}
             alt={resto?.name ?? ''}
@@ -190,7 +191,7 @@ export default function RestoDetailClient({
           />
         </FadeInItem>
         <div className='grid grid-rows-[2fr_1fr] gap-5'>
-          <FadeInItem index={1} className='relative overflow-hidden'>
+          <FadeInItem index={1} eager className='relative overflow-hidden'>
             <Image
               src={resto?.images?.[2] ?? placeholder}
               alt='Photo 4'
@@ -204,6 +205,7 @@ export default function RestoDetailClient({
               <FadeInItem
                 key={i}
                 index={2 + idx}
+                eager
                 className='relative overflow-hidden'
               >
                 <Image
@@ -220,7 +222,7 @@ export default function RestoDetailClient({
       </div>
 
       {/* --- Hero Images (Mobile Slider) --- */}
-      <FadeInItem index={0} className='relative h-65 md:hidden'>
+      <FadeInItem index={0} eager className='relative h-65 md:hidden'>
         <div className='absolute inset-0 overflow-hidden rounded-2xl'>
           <AnimatePresence
             initial={false}
@@ -292,7 +294,7 @@ export default function RestoDetailClient({
                   width={64}
                   height={64}
                   className='h-full w-full object-cover'
-                  unoptimized
+                  unoptimized={isUnoptimizedSrc(resto.logo)}
                 />
               ) : (
                 <span className='text-3xl'>🍔</span>
@@ -405,7 +407,7 @@ export default function RestoDetailClient({
                             fill
                             sizes='(max-width: 768px) 50vw, 25vw'
                             className='object-cover'
-                            unoptimized
+                            unoptimized={isUnoptimizedSrc(item.image)}
                           />
                         </div>
                         <div
@@ -574,7 +576,7 @@ export default function RestoDetailClient({
                                 width={58}
                                 height={58}
                                 className='h-full w-full object-cover'
-                                unoptimized
+                                unoptimized={isUnoptimizedSrc(userAvatar)}
                               />
                             ) : (
                               <span className='text-4xl'>👤</span>
@@ -672,7 +674,7 @@ export default function RestoDetailClient({
                 fill
                 sizes='(max-width: 768px) 100vw, 448px'
                 className='object-cover'
-                unoptimized
+                unoptimized={isUnoptimizedSrc(selectedMenuItem.image)}
               />
               <button
                 onClick={() => setSelectedMenuItem(null)}
