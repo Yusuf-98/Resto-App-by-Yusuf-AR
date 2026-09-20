@@ -31,21 +31,26 @@ export default function HomePage() {
     <HomeSearchProvider>
       <div className='mb-13'>
         {/* --- Hero Section --- */}
-        <FadeInItem index={0}>
+        <FadeInItem index={0} eager>
           <section
             className='relative flex items-center justify-center'
             style={{
               height:
                 'clamp(648px, 648px + (827px - 648px) * ((100vw - 393px) / (1440px - 393px)), 827px)',
-              backgroundImage: `url(${HeroImage.src})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
             }}
           >
+            <Image
+              src={HeroImage}
+              alt=''
+              fill
+              priority
+              sizes='100vw'
+              className='object-cover'
+            />
             <div className='absolute inset-0 bg-black/35' />
             <div className='flex flex-col gap-6 md:gap-10 z-10 w-full md:mt-5 md:w-186 px-4 text-center'>
               {/* --- Hero Title --- */}
-              <FadeInItem index={1}>
+              <FadeInItem index={1} eager>
                 <div className='flex flex-col gap-1 md:gap-2'>
                   <h1 className='text-display-lg-track md:text-display-2xl-track font-extrabold text-white text-center'>
                     Explore Culinary Experiences
@@ -58,7 +63,7 @@ export default function HomePage() {
               </FadeInItem>
 
               {/* --- Search Bar (Client) --- */}
-              <FadeInItem index={2}>
+              <FadeInItem index={2} eager>
                 <SearchBar />
               </FadeInItem>
             </div>
