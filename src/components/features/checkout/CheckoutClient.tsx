@@ -147,8 +147,9 @@ export function CheckoutClient() {
       toast({ title: 'Cart is empty', variant: 'error' });
       return;
     }
+    let order: Awaited<ReturnType<typeof checkout.mutateAsync>>;
     try {
-      const order = await checkout.mutateAsync({
+      order = await checkout.mutateAsync({
         restaurants: targetGroups.map((g) => ({
           restaurantId: Number(g.restaurant.id),
           items: g.items.map((i) => ({
@@ -161,38 +162,43 @@ export function CheckoutClient() {
         paymentMethod: values.paymentMethod,
         notes: values.notes,
       });
-
-      // --- Delete Checked Out Items ---
-      const itemsToDelete = targetGroups.flatMap((g) =>
-        g.items.map((i) => String(i.id))
-      );
-      await Promise.all(itemsToDelete.map((id) => deleteItem.mutateAsync(id)));
-
-      setPaymentSuccess({
-        date: new Date()
-          .toLocaleString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-          })
-          .replace(' pukul', ','),
-        paymentMethod:
-          PAYMENT_METHODS.find((p) => p.id === values.paymentMethod)?.name ??
-          values.paymentMethod,
-        subtotal: order.pricing?.subtotal ?? subtotal,
-        deliveryFee: order.pricing?.deliveryFee ?? DELIVERY_FEE,
-        serviceFee: order.pricing?.serviceFee ?? SERVICE_FEE,
-        total: order.pricing?.totalPrice ?? total,
-      });
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data
           ?.message ?? 'Checkout failed. Please try again.';
       toast({ title: 'Checkout failed', description: msg, variant: 'error' });
+      return;
     }
+
+    // Order is already placed and paid at this point — nothing below should
+    // be able to turn this into a "checkout failed" outcome for the user.
+    setPaymentSuccess({
+      date: new Date()
+        .toLocaleString('id-ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        })
+        .replace(' pukul', ','),
+      paymentMethod:
+        PAYMENT_METHODS.find((p) => p.id === values.paymentMethod)?.name ??
+        values.paymentMethod,
+      subtotal: order.pricing?.subtotal ?? subtotal,
+      deliveryFee: order.pricing?.deliveryFee ?? DELIVERY_FEE,
+      serviceFee: order.pricing?.serviceFee ?? SERVICE_FEE,
+      total: order.pricing?.totalPrice ?? total,
+    });
+
+    // --- Delete Checked Out Items (best-effort; order already succeeded) ---
+    const itemsToDelete = targetGroups.flatMap((g) =>
+      g.items.map((i) => String(i.id))
+    );
+    await Promise.allSettled(
+      itemsToDelete.map((id) => deleteItem.mutateAsync(id))
+    );
   }
 
   return (
