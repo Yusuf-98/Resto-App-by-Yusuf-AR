@@ -9,7 +9,6 @@ import { RestaurantCard } from '@/components/shared/RestaurantCard';
 import { RestaurantCardSkeleton } from '@/components/shared/Skeletons';
 import { FilterPanel } from '@/components/shared/FilterPanel';
 import { useModalA11y } from '@/hooks/use-modal-a11y';
-import { motion, AnimatePresence } from 'framer-motion';
 import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 import type { Restaurant } from '@/types';
 
@@ -81,7 +80,7 @@ export function CategoryClient({
     <div className='custom-container pt-20 md:pt-22 lg:pt-32 pb-12 bg-white'>
       <div className='mx-auto max-w-7xl'>
         {/* --- Page Title --- */}
-        <FadeInItem index={0}>
+        <FadeInItem index={0} eager>
           <h1 className='mb-5 md:mb-8 text-display-xs lg:text-display-md-track font-extrabold text-neutral-950'>
             {title}
           </h1>
@@ -89,7 +88,7 @@ export function CategoryClient({
 
         <div className='flex flex-col gap-5 lg:flex-row lg:gap-8'>
           {/* --- Filter Sidebar (Desktop) --- */}
-          <FadeInItem index={1}>
+          <FadeInItem index={1} eager>
             <aside className='hidden w-66.5 shrink-0 rounded-xl lg:block'>
               <div className='sticky top-32 rounded-xl bg-white shadow-card'>
                 <FilterPanel {...filterProps} />
@@ -98,7 +97,7 @@ export function CategoryClient({
           </FadeInItem>
 
           {/* --- Filter Button (Mobile) --- */}
-          <FadeInItem index={1}>
+          <FadeInItem index={1} eager>
             <button
               onClick={() => setShowFilter(true)}
               className='flex w-full items-center justify-between rounded-xl px-3 md:px-5 py-3 text-sm md:text-md font-extrabold md:tracking-tight-2 text-neutral-950 lg:hidden shadow-card'
@@ -118,7 +117,7 @@ export function CategoryClient({
               </div>
             ) : restaurants.length === 0 ? (
               // --- Empty State ---
-              <FadeInItem index={2}>
+              <FadeInItem index={2} eager>
                 <div className='flex flex-col items-center justify-center py-24 text-center'>
                   <span className='mb-3 text-5xl'>🍽️</span>
                   <p className='text-lg font-bold text-neutral-700'>
@@ -132,7 +131,7 @@ export function CategoryClient({
             ) : (
               <FadeInStagger className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
                 {restaurants.map((r, idx) => (
-                  <FadeInItem key={r.id} index={idx % 4}>
+                  <FadeInItem key={r.id} index={idx % 4} eager={idx < 4}>
                     <RestaurantCard restaurant={r} />
                   </FadeInItem>
                 ))}
@@ -143,45 +142,31 @@ export function CategoryClient({
       </div>
 
       {/* --- Filter Drawer (Mobile) --- */}
-      <AnimatePresence>
-        {showFilter && (
-          <div className='fixed inset-0 z-50 lg:hidden'>
-            <motion.div
-              className='absolute inset-0 bg-black/50'
-              onClick={() => setShowFilter(false)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-            />
-            <motion.div
-              ref={filterDialogRef}
-              role='dialog'
-              aria-modal='true'
-              aria-label='Filter'
-              tabIndex={-1}
-              className='absolute inset-y-0 left-0 w-[76%] max-w-sm overflow-y-auto py-4 bg-white outline-none'
-              initial={{ x: '-100%', opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: '-100%', opacity: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-            >
-              <FilterPanel {...filterProps} />
-            </motion.div>
-            <motion.button
-              onClick={() => setShowFilter(false)}
-              aria-label='Close filter'
-              className='absolute left-[calc(76%+8px)] top-4 z-50'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Image src={CloseFilter} alt='' width={32} height={32} />
-            </motion.button>
+      {showFilter && (
+        <div className='fixed inset-0 z-50 lg:hidden'>
+          <div
+            className='drawer-backdrop-in absolute inset-0 bg-black/50'
+            onClick={() => setShowFilter(false)}
+          />
+          <div
+            ref={filterDialogRef}
+            role='dialog'
+            aria-modal='true'
+            aria-label='Filter'
+            tabIndex={-1}
+            className='drawer-panel-in absolute inset-y-0 left-0 w-[76%] max-w-sm overflow-y-auto py-4 bg-white outline-none'
+          >
+            <FilterPanel {...filterProps} />
           </div>
-        )}
-      </AnimatePresence>
+          <button
+            onClick={() => setShowFilter(false)}
+            aria-label='Close filter'
+            className='drawer-close-in absolute left-[calc(76%+8px)] top-4 z-50'
+          >
+            <Image src={CloseFilter} alt='' width={32} height={32} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
