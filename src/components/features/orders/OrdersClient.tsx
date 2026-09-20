@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { isUnoptimizedSrc } from '@/lib/image-hosts';
 import Link from 'next/link';
 import JohnDoe48 from '@/assets/images/john-doe-48.png';
 import MarkerPin from '@/assets/icons/marker-pin.png';
@@ -130,7 +131,7 @@ export function OrdersClient() {
                       width={48}
                       height={48}
                       className='h-full w-full object-cover rounded-full'
-                      unoptimized
+                      unoptimized={isUnoptimizedSrc(user.avatar)}
                     />
                   ) : (
                     <Image
@@ -284,7 +285,8 @@ export function OrdersClient() {
                                             alt={item.menuName ?? 'Food'}
                                             fill
                                             className='object-cover w-full'
-                                            unoptimized
+                                            sizes='(min-width: 768px) 80px, 64px'
+                                            unoptimized={isUnoptimizedSrc(item.image)}
                                           />
                                         </div>
                                         <div className='flex flex-col justify-center'>
