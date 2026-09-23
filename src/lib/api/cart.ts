@@ -1,6 +1,7 @@
 import apiClient from './axios';
 import type { CartGroup } from '@/types';
 
+// --- Get Cart ---
 export async function getCart(): Promise<CartGroup[]> {
   const { data } = await apiClient.get('/api/cart');
   if (Array.isArray(data)) return data as CartGroup[];
@@ -15,6 +16,7 @@ export async function getCart(): Promise<CartGroup[]> {
   return [];
 }
 
+// --- Add To Cart ---
 export async function addToCart(payload: {
   restaurantId: string | number;
   menuId: string | number;
@@ -27,6 +29,7 @@ export async function addToCart(payload: {
   });
 }
 
+// --- Update Cart Item ---
 export async function updateCartItem(
   id: string,
   quantity: number
@@ -34,10 +37,12 @@ export async function updateCartItem(
   await apiClient.put(`/api/cart/${id}`, { quantity });
 }
 
+// --- Delete Cart Item ---
 export async function deleteCartItem(id: string): Promise<void> {
   await apiClient.delete(`/api/cart/${id}`);
 }
 
+// --- Clear Cart ---
 export async function clearCart(): Promise<void> {
   await apiClient.delete('/api/cart');
 }
