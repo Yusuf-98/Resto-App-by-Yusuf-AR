@@ -318,6 +318,7 @@ export default function RestoDetailClient({
           </div>
           <button
             onClick={handleShare}
+            aria-label='Share'
             className='w-11 h-11 md:w-35 md:h-11 flex items-center justify-center gap-3 rounded-full border border-neutral-300 bg-white md:px-4 md:py-3 text-sm md:text-md tracking-tight-2 font-bold text-neutral-950 transition-all duration-500 ease-in-out hover-dark cursor-pointer'
           >
             <Share2 className='h-5 w-5 md:h-6 md:w-6' />
@@ -460,6 +461,7 @@ export default function RestoDetailClient({
                               <button
                                 onClick={() => changeQty(item, -1)}
                                 disabled={isPending}
+                                aria-label={`Decrease quantity of ${itemName}`}
                                 className='flex items-center justify-center rounded-full border border-neutral-300 text-neutral-950 shrink-0 transition-all duration-500 ease-in-out hover-dark disabled:opacity-50'
                                 style={{
                                   width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
@@ -484,6 +486,7 @@ export default function RestoDetailClient({
                               <button
                                 onClick={() => changeQty(item, 1)}
                                 disabled={isPending}
+                                aria-label={`Increase quantity of ${itemName}`}
                                 className='flex items-center justify-center rounded-full bg-primary-100 text-white transition-all duration-500 ease-in-out hover-dim shrink-0 disabled:opacity-50'
                                 style={{
                                   width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
@@ -714,6 +717,7 @@ export default function RestoDetailClient({
                   <button
                     onClick={() => changeQty(selectedMenuItem, -1)}
                     disabled={selectedPending}
+                    aria-label={`Decrease quantity of ${selectedMenuItem.foodName ?? selectedMenuItem.name ?? 'Menu'}`}
                     className='flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300 text-neutral-950 transition-all duration-500 ease-in-out hover-dark disabled:opacity-50'
                   >
                     <Minus className='h-5 w-5' />
@@ -724,6 +728,7 @@ export default function RestoDetailClient({
                   <button
                     onClick={() => changeQty(selectedMenuItem, 1)}
                     disabled={selectedPending}
+                    aria-label={`Increase quantity of ${selectedMenuItem.foodName ?? selectedMenuItem.name ?? 'Menu'}`}
                     className='flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-white transition-all duration-500 ease-in-out hover-dim disabled:opacity-50'
                   >
                     <Plus className='h-5 w-5' />
