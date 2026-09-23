@@ -1,10 +1,12 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+// --- Class Names ---
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// --- Format Currency ---
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -16,6 +18,7 @@ export function formatCurrency(amount: number): string {
     .replace(/\s/g, '');
 }
 
+// --- Format Date ---
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);
   const datePart = new Intl.DateTimeFormat('id-ID', {
@@ -32,11 +35,13 @@ export function formatDate(dateString: string): string {
   return `${datePart}, ${timePart}`;
 }
 
+// --- Format Distance ---
 export function formatDistance(km: number): string {
   if (km < 1) return `${(km * 1000).toFixed(0)} m`;
   return `${km.toFixed(1)} km`;
 }
 
+// --- Get Status Label ---
 export function getStatusLabel(status: string): string {
   const labels: Record<string, string> = {
     preparing: 'Preparing',
@@ -48,6 +53,7 @@ export function getStatusLabel(status: string): string {
   return labels[status] ?? status;
 }
 
+// --- To Restaurant Array ---
 export function toRestaurantArray(
   data: unknown
 ): import('./api/resto').Restaurant[] {
@@ -63,6 +69,7 @@ export function toRestaurantArray(
   return [];
 }
 
+// --- Get Dummy Distance ---
 export function getDummyDistance(id: string | number): number {
   const n = typeof id === 'string' ? parseInt(id, 10) : id;
   const safeN = Number.isNaN(n) ? 0 : n;
