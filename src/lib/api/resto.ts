@@ -3,6 +3,7 @@ import type { Restaurant, RestaurantDetail, RestaurantFilter } from '@/types';
 
 export type { Restaurant };
 
+// --- Normalize Response ---
 function toArray(data: unknown): Restaurant[] {
   if (!data) return [];
   if (Array.isArray(data)) return data as Restaurant[];
@@ -23,6 +24,7 @@ function toArray(data: unknown): Restaurant[] {
   return [];
 }
 
+// --- Get Restaurants ---
 export async function getRestaurants(
   params?: RestaurantFilter
 ): Promise<Restaurant[]> {
@@ -31,6 +33,7 @@ export async function getRestaurants(
   return result;
 }
 
+// --- Get Restaurant By Id ---
 export async function getRestaurantById(
   id: string,
   params?: { limitMenu?: number; limitReview?: number }
@@ -41,6 +44,7 @@ export async function getRestaurantById(
   );
 }
 
+// --- Search Restaurants ---
 export async function searchRestaurants(
   q: string,
   params?: { page?: number; limit?: number }
@@ -51,6 +55,7 @@ export async function searchRestaurants(
   return toArray(data);
 }
 
+// --- Get Best Sellers ---
 export async function getBestSellers(params?: {
   page?: number;
   limit?: number;
@@ -59,6 +64,7 @@ export async function getBestSellers(params?: {
   return toArray(data);
 }
 
+// --- Get Recommended ---
 export async function getRecommended(params?: {
   page?: number;
   limit?: number;
@@ -67,6 +73,7 @@ export async function getRecommended(params?: {
   return toArray(data);
 }
 
+// --- Get Nearby ---
 export async function getNearby(params?: {
   range?: number;
   limit?: number;
