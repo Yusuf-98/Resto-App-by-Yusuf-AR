@@ -17,6 +17,7 @@ function CartItemRow({
 }) {
   return (
     <div className='flex items-center justify-between'>
+      {/* --- Item Info --- */}
       <div className='flex items-center gap-4.25'>
         <div className='relative h-16 md:h-20 w-16 md:w-20 shrink-0 overflow-hidden rounded-xl'>
           <Image
@@ -38,6 +39,7 @@ function CartItemRow({
         </div>
       </div>
 
+      {/* --- Quantity Stepper --- */}
       <div
         className='flex items-center justify-between shrink-0'
         style={{
@@ -49,6 +51,7 @@ function CartItemRow({
           type='button'
           onClick={() => onUpdate(String(item.id), item.quantity - 1)}
           disabled={isUpdating}
+          aria-label={`Decrease quantity of ${item.menu?.foodName ?? 'item'}`}
           className='flex items-center justify-center rounded-full border border-neutral-300 text-neutral-950 shrink-0 disabled:opacity-50 cursor-pointer transition-all duration-500 ease-in-out hover-dark'
           style={{
             width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
@@ -72,6 +75,7 @@ function CartItemRow({
           type='button'
           onClick={() => onUpdate(String(item.id), item.quantity + 1)}
           disabled={isUpdating}
+          aria-label={`Increase quantity of ${item.menu?.foodName ?? 'item'}`}
           className='flex items-center justify-center rounded-full bg-primary-100 text-white shrink-0 disabled:opacity-50 cursor-pointer transition-all duration-500 ease-in-out hover-dim'
           style={{
             width: 'clamp(32px, 1.2vw + 27.8px, 40px)',
