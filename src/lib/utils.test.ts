@@ -22,6 +22,21 @@ describe('formatDate', () => {
     const result = formatDate('2026-09-18T15:53:00.000Z');
     expect(result).toMatch(/^\d{1,2} \w+ \d{4}, \d{2}\.\d{2}$/);
   });
+
+  it('always shows Jakarta time, whatever the machine timezone is', () => {
+    const original = process.env.TZ;
+    try {
+      for (const tz of ['UTC', 'America/Los_Angeles', 'Asia/Jakarta']) {
+        process.env.TZ = tz;
+        expect(formatDate('2026-09-14T13:44:00.000Z')).toBe(
+          '14 September 2026, 20.44'
+        );
+      }
+    } finally {
+      if (original === undefined) delete process.env.TZ;
+      else process.env.TZ = original;
+    }
+  });
 });
 
 describe('formatDistance', () => {
