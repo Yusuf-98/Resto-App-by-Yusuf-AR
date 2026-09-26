@@ -250,6 +250,7 @@ export function Navbar() {
             <div className='flex items-center gap-3 md:gap-4'>
               <Link
                 href='/login'
+                prefetch={false}
                 className={`flex items-center justify-center h-10 md:h-12 w-30 md:w-40.75 bg-transparent rounded-full border-2 p-2 text-sm md:text-md tracking-tight-2 font-bold text-center transition-all duration-500 ease-in-out md:px-5 cursor-pointer ${isSolid ? 'hover-dark' : 'hover-light'}`}
                 style={{
                   borderColor: isSolid
@@ -264,6 +265,7 @@ export function Navbar() {
               </Link>
               <Link
                 href='/register'
+                prefetch={false}
                 className={`flex items-center justify-center h-10 md:h-12 w-30 md:w-40.75 rounded-full p-2 gap-2 text-sm md:text-md tracking-tight-2 font-bold text-center transition-all duration-500 ease-in-out md:px-5 cursor-pointer ${
                   isSolid
                     ? 'bg-primary-100 text-white hover-dim'
