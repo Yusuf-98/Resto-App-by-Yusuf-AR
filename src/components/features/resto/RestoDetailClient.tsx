@@ -385,7 +385,7 @@ export default function RestoDetailClient({
                   const isPending = pendingKey === key;
                   const itemName = item.foodName ?? item.name ?? 'Menu';
                   return (
-                    <FadeInItem key={key} index={idx % 4}>
+                    <FadeInItem key={key} index={idx % 4} eager={idx < 2}>
                       <div
                         role='button'
                         tabIndex={0}
