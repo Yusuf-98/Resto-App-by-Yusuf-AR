@@ -32,7 +32,7 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className='w-full border-t bg-neutral-950 border-neutral-300'>
+    <footer className='w-full border-t bg-neutral-950 border-neutral-300 [content-visibility:auto] [contain-intrinsic-size:auto_500px]'>
       <div className='custom-container flex flex-col items-start gap-6 md:gap-0 md:flex-row md:justify-between py-10 md:py-20'>
         {/* Brand — Content Container */}
         <div className='flex flex-col gap-4 md:gap-10 w-full md:w-95 md:min-w-60'>
@@ -72,9 +72,9 @@ export function Footer() {
         <div className='md:flex-1 flex flex-row w-full md:justify-end'>
           {/* Explore — E-Commerce Menu */}
           <div className='flex flex-col items-start gap-4 w-full md:ml-[clamp(24px,27.7vw-188.57px,210px)] md:gap-5 md:w-50'>
-            <h3 className='font-extrabold text-sm md:text-md text-center text-neutral-25'>
+            <h2 className='font-extrabold text-sm md:text-md text-center text-neutral-25'>
               Explore
-            </h3>
+            </h2>
             <ul className='flex flex-col gap-4 md:gap-5'>
               {exploreLinks.map((l) => (
                 <li key={l.label}>
@@ -91,9 +91,9 @@ export function Footer() {
 
           {/* Help */}
           <div className='flex flex-col items-start gap-4 w-full md:ml-[clamp(24px,27.7vw-188.57px,210px)] md:gap-5 md:max-w-50'>
-            <h3 className='font-extrabold text-sm md:text-md text-center text-neutral-25'>
+            <h2 className='font-extrabold text-sm md:text-md text-center text-neutral-25'>
               Help
-            </h3>
+            </h2>
             <ul className='flex flex-col gap-4 md:gap-5'>
               {helpLinks.map((l) => (
                 <li key={l.label}>
