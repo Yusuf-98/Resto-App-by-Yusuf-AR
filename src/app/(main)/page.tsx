@@ -74,7 +74,7 @@ export default function HomePage() {
         <section className='mx-auto w-full max-w-360 px-4 py-6 md:px-30 md:py-12'>
           <FadeInStagger className='grid grid-cols-3 lg:grid-cols-6 gap-x-3 gap-y-5 md:gap-x-5'>
             {CATEGORIES.map((cat, idx) => (
-              <FadeInItem key={cat.label} index={idx}>
+              <FadeInItem key={cat.label} index={idx} eager={idx < 3}>
                 <Link
                   href={cat.href}
                   className='flex flex-col gap-1 md:gap-2 items-center justify-center bg-white transition-all duration-500 ease-in-out hover-scale-105'
