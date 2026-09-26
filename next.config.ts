@@ -3,6 +3,7 @@ import { OPTIMIZED_IMAGE_HOSTS } from './src/lib/image-hosts';
 
 const nextConfig: NextConfig = {
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: OPTIMIZED_IMAGE_HOSTS.map((hostname) => ({
       protocol: 'https' as const,
       hostname,
