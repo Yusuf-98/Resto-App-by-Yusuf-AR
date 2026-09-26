@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import HeroImage from '@/assets/images/hero-image.png';
@@ -44,6 +45,7 @@ export default function HomePage() {
               alt=''
               fill
               priority
+              fetchPriority='high'
               sizes='100vw'
               className='object-cover'
             />
@@ -96,7 +98,9 @@ export default function HomePage() {
         </section>
 
         {/* --- Restaurant List Section (Client) --- */}
-        <RestaurantListSection />
+        <Suspense>
+          <RestaurantListSection />
+        </Suspense>
       </div>
     </HomeSearchProvider>
   );
