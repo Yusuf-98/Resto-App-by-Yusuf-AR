@@ -306,7 +306,7 @@ body {
 /* ── Entrance (FadeInItem) ─────────────────── */
 @keyframes fade-in-entrance {
   from {
-    opacity: 0;
+    opacity: 0.01;
     transform: translateY(60px);
   }
 }
