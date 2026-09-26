@@ -48,14 +48,17 @@ export function useBestSellers(params?: { page?: number; limit?: number }) {
 }
 
 // --- Get Recommended ---
-export function useRecommended(params?: { page?: number; limit?: number }) {
+export function useRecommended(
+  params?: { page?: number; limit?: number },
+  options?: { enabled?: boolean }
+) {
   const { isAuthenticated } = useAuthStore();
   return useQuery({
     queryKey: queryKeys.recommended(params),
     queryFn: () => restoApi.getRecommended(params),
     staleTime: 1000 * 60 * 5,
     retry: 1,
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && (options?.enabled ?? true),
   });
 }
 
