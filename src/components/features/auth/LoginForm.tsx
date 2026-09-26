@@ -80,7 +80,7 @@ export function LoginForm({}: LoginFormProps) {
             type='button'
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
-            className='text-neutral-950'
+            className='-m-1 p-1 text-neutral-950'
           >
             {showPassword ? (
               <Eye className='h-4 w-4' />
