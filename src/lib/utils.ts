@@ -25,11 +25,13 @@ export function formatDate(dateString: string): string {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
+    timeZone: 'Asia/Jakarta',
   }).format(date);
   const timePart = new Intl.DateTimeFormat('id-ID', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
+    timeZone: 'Asia/Jakarta',
   }).format(date);
 
   return `${datePart}, ${timePart}`;
