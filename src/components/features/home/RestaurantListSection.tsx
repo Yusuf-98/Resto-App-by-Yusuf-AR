@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useRestaurants,
   useRecommended,
@@ -13,9 +13,7 @@ import { Button } from '@/components/ui/button';
 import { FadeInStagger, FadeInItem } from '@/components/shared/FadeInStagger';
 import { useHomeSearch } from './HomeSearchProvider';
 
-// --- Recommended Section Limit ---
-// /api/resto/recommended ignores the limit query param (no pagination
-// support), so the cap has to be enforced client-side.
+// --- Recommended Limit ---
 const RECOMMENDED_LIMIT = 12;
 
 // --- Restaurant List Section ---
@@ -24,21 +22,48 @@ export function RestaurantListSection() {
   const { isAuthenticated, _hasHydrated } = useAuthStore();
 
   // --- UI State ---
+  const sectionRef = useRef<HTMLElement>(null);
+  const [nearViewport, setNearViewport] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
+  // --- Load Trigger ---
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      setNearViewport(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNearViewport(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '800px 0px' }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  const isSearching = query.length >= 2;
+  const shouldLoad = nearViewport || isSearching;
+
   // --- Data Fetching ---
-  const { data: allRestos, isLoading: loadingAll } = useRestaurants({
-    limit: 24,
-  });
-  const { data: recommended, isLoading: loadingRec } = useRecommended({
-    limit: RECOMMENDED_LIMIT,
-  });
+  const { data: allRestos, isLoading: loadingAll } = useRestaurants(
+    { limit: 24 },
+    { enabled: shouldLoad }
+  );
+  const { data: recommended, isLoading: loadingRec } = useRecommended(
+    { limit: RECOMMENDED_LIMIT },
+    { enabled: shouldLoad }
+  );
   const { data: searchResults, isLoading: loadingSearch } =
     useRestaurantSearch(query);
 
   // --- Derived State ---
-  const isSearching = query.length >= 2;
   const mainList = isSearching
     ? (searchResults ?? [])
     : !_hasHydrated || showAll || !isAuthenticated
@@ -46,13 +71,14 @@ export function RestaurantListSection() {
       : (recommended ?? []).slice(0, RECOMMENDED_LIMIT);
   const isLoadingMain = isSearching
     ? loadingSearch
-    : showAll || !isAuthenticated
-      ? loadingAll
-      : loadingRec;
+    : !shouldLoad || (showAll || !isAuthenticated ? loadingAll : loadingRec);
   const visibleMain = showMore ? mainList : mainList.slice(0, 12);
 
   return (
-    <section className='mx-auto w-full max-w-360 flex flex-col px-4 pb-12 gap-4 md:gap-6 lg:gap-8 md:px-10 lg:px-30'>
+    <section
+      ref={sectionRef}
+      className='mx-auto w-full max-w-360 flex flex-col px-4 pb-12 gap-4 md:gap-6 lg:gap-8 md:px-10 lg:px-30'
+    >
       {/* --- Section Header --- */}
       <FadeInItem index={0}>
         <div className='flex items-center justify-between'>
