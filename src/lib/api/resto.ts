@@ -1,4 +1,4 @@
-import apiClient from './client';
+import apiClient from './axios';
 import type { Restaurant, RestaurantDetail, RestaurantFilter } from '@/types';
 
 export type { Restaurant };
