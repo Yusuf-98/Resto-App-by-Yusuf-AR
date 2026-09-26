@@ -1,4 +1,4 @@
-import apiClient from './axios';
+import apiClient from './client';
 import type { Review, ReviewPayload } from '@/types';
 
 // --- Create Review ---
