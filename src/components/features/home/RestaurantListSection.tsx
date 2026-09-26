@@ -42,7 +42,7 @@ export function RestaurantListSection() {
           observer.disconnect();
         }
       },
-      { rootMargin: '800px 0px' }
+      { rootMargin: '50px 0px' }
     );
     observer.observe(node);
     return () => observer.disconnect();
