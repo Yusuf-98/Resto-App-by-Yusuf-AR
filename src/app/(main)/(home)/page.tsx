@@ -79,6 +79,7 @@ export default function HomePage() {
               <FadeInItem key={cat.label} index={idx} eager={idx < 3}>
                 <Link
                   href={cat.href}
+                  prefetch={false}
                   className='flex flex-col gap-1 md:gap-2 items-center justify-center bg-white transition-all duration-500 ease-in-out hover-scale-105'
                 >
                   <div className='w-full h-25 flex justify-center items-center p-2 rounded-2xl shadow-card'>
