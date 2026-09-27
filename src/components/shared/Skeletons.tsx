@@ -17,17 +17,4 @@ export function RestaurantCardSkeleton() {
   );
 }
 
-export function MenuCardSkeleton() {
-  return (
-    <div className='overflow-hidden rounded-2xl border border-neutral-100 bg-white'>
-      <Skeleton className='h-36 w-full rounded-none' />
-      <div className='space-y-2 p-3'>
-        <Skeleton className='h-4 w-3/4 rounded' />
-        <Skeleton className='h-4 w-1/2 rounded' />
-        <Skeleton className='h-8 w-full rounded-full' />
-      </div>
-    </div>
-  );
-}
-
 export { Skeleton };
