@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
-import { LazyToaster } from '@/components/ui/lazy-toaster';
+import { Toaster } from '@/components/ui/toaster';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -47,7 +47,7 @@ export default function RootLayout({
         />
         <Providers>
           {children}
-          <LazyToaster />
+          <Toaster />
         </Providers>
       </body>
     </html>
