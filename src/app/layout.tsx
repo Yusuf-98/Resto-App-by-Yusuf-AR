@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Nunito } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import { Providers } from './providers';
 import { Toaster } from '@/components/ui/toaster';
 
-const nunito = Nunito({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+const nunito = localFont({
+  src: '../assets/fonts/nunito-subset.woff2',
+  weight: '400 800',
   display: 'swap',
 });
 
