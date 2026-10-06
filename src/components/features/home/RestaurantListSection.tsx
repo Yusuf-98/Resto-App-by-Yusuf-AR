@@ -19,7 +19,8 @@ const RECOMMENDED_LIMIT = 12;
 // --- Restaurant List Section ---
 export function RestaurantListSection() {
   const { query } = useHomeSearch();
-  const { isAuthenticated, _hasHydrated } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isAuthReady = useAuthStore((s) => s._hasHydrated && s.isAuthenticated);
 
   // --- UI State ---
   const sectionRef = useRef<HTMLElement>(null);
@@ -66,7 +67,7 @@ export function RestaurantListSection() {
   // --- Derived State ---
   const mainList = isSearching
     ? (searchResults ?? [])
-    : !_hasHydrated || showAll || !isAuthenticated
+    : showAll || !isAuthReady
       ? (allRestos ?? [])
       : (recommended ?? []).slice(0, RECOMMENDED_LIMIT);
   const isLoadingMain = isSearching
