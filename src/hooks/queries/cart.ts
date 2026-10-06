@@ -5,7 +5,7 @@ import { queryKeys } from './keys';
 
 // --- Get Cart ---
 export function useCart() {
-  const { isAuthenticated } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   return useQuery({
     queryKey: queryKeys.cart(),
     queryFn: cartApi.getCart,
