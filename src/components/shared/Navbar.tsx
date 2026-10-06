@@ -111,7 +111,7 @@ export function Navbar() {
             src={isSolid ? LogoColor : Logo}
             alt='Foody'
             className='hidden w-auto h-10 md:h-10.5 md:block'
-            priority
+            loading='lazy'
           />
         </Link>
 
