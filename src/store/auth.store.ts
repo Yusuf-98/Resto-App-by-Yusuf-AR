@@ -71,6 +71,7 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'foody_auth',
       storage: rememberAwareStorage,
+      skipHydration: true,
       partialize: (state) => ({
         token: state.token,
         user: state.user,
