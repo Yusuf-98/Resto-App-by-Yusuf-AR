@@ -276,13 +276,24 @@ body {
 /* ── Shimmer loading ───────────────────────── */
 @keyframes shimmer {
   0% {
-    background-position: -1000px 0;
+    transform: translateX(0);
   }
   100% {
-    background-position: 1000px 0;
+    transform: translateX(2000px);
   }
 }
 .shimmer {
+  position: relative;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -3000px;
+  width: calc(100% + 3000px);
   background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
   background-size: 1000px 100%;
   animation: shimmer 1.5s infinite;
