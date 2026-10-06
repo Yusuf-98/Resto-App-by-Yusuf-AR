@@ -12,6 +12,17 @@ const nextConfig: NextConfig = {
       hostname,
     })),
   },
+  webpack: (config, { isServer, nextRuntime }) => {
+    // --- Client Buffer polyfill ---
+    if (!isServer && nextRuntime !== 'edge') {
+      for (const plugin of config.plugins) {
+        if (plugin?.constructor?.name === 'ProvidePlugin') {
+          delete plugin.definitions?.Buffer;
+        }
+      }
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
