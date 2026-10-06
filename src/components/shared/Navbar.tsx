@@ -26,7 +26,9 @@ export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   // --- Auth State ---
-  const { isAuthenticated, user, logout } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
   // --- Data Fetching ---
   const { data: cartGroups } = useCart();
   const qc = useQueryClient();
