@@ -14,7 +14,7 @@ Register an account to try the cart, checkout and order history; browsing, searc
   <img src="docs/screenshots/00-hero.png" alt="Foody home page with hero banner and restaurant categories" width="820">
 </p>
 
-[![Lighthouse](https://img.shields.io/badge/Lighthouse-91_mobile_%C2%B7_100_desktop-brightgreen?logo=lighthouse&logoColor=white)](#performance)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-98_mobile_%C2%B7_100_desktop-brightgreen?logo=lighthouse&logoColor=white)](#performance)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss)
@@ -81,7 +81,7 @@ npm run dev
 | Command | Description |
 | --- | --- |
 | `npm run dev` | Start the Next.js dev server |
-| `npm run build` | Production build |
+| `npm run build` | Production build, then defers the home page's app scripts ([defer-scripts.mjs](scripts/defer-scripts.mjs)) |
 | `npm run start` | Run the production build |
 | `npm run lint` | Run ESLint |
 | `npm run typecheck` | Type-check only |
@@ -103,27 +103,27 @@ GitHub Actions runs lint, type-check, tests and the production build on every pu
 
 ## Performance
 
-Lighthouse results for the [live site](https://resto-app-by-yusuf-ar.vercel.app/): the median of 10 mobile and 6 desktop runs on 28 September 2026 (Lighthouse 13.5.0).
+Lighthouse results for the [live site](https://resto-app-by-yusuf-ar.vercel.app/): the median of 10 mobile and 6 desktop runs on 7 October 2026 (Lighthouse 13.5.0).
 
 | | 📱 Mobile | 🖥️ Desktop |
 | --- | :---: | :---: |
-| **Performance** | **91** | **100** |
+| **Performance** | **98** | **100** |
 | **Accessibility** | **100** | **100** |
 | **Best practices** | **100** | **100** |
 | **SEO** | **100** | **100** |
 
-Mobile performance ranged from 89 to 94 across the 10 runs; desktop scored 100 in all 6.
+Mobile performance ranged from 94 to 99 across the 10 runs; desktop scored 100 in all 6.
 
 ### Core metrics
 
 | Metric | 📱 Mobile | 🖥️ Desktop | Good if |
 | --- | :---: | :---: | :---: |
-| **First Contentful Paint** (first pixels) | 🟢 0.9 s | 🟢 0.3 s | ≤ 1.8 s |
-| **Largest Contentful Paint** (main content visible) | 🟢 2.3 s | 🟢 0.5 s | ≤ 2.5 s |
-| **Total Blocking Time** (page unresponsive) | 🟡 276 ms | 🟢 25 ms | ≤ 200 ms |
+| **First Contentful Paint** (first pixels) | 🟢 1.0 s | 🟢 0.4 s | ≤ 1.8 s |
+| **Largest Contentful Paint** (main content visible) | 🟢 1.4 s | 🟢 0.5 s | ≤ 2.5 s |
+| **Total Blocking Time** (page unresponsive) | 🟢 165 ms | 🟢 14 ms | ≤ 200 ms |
 | **Cumulative Layout Shift** (content jumping) | 🟢 0 | 🟢 0 | ≤ 0.1 |
 
-🟢 within Google's "good" range · 🟡 close to it · figures are medians
+🟢 within Google's "good" range · figures are medians
 
 ### What "mobile" means in this test
 
@@ -137,7 +137,10 @@ Run it yourself with [PageSpeed Insights](https://pagespeed.web.dev/analysis?url
 
 ### How it stays fast
 
-- **Hero image** is served as WebP through `next/image`, preloaded with `fetchpriority="high"` from the top of the `<head>`.
+- **App scripts after the hero**: the home page is prerendered, so its first screen needs no JavaScript to appear. A post-build step ([defer-scripts.mjs](scripts/defer-scripts.mjs)) moves the page's script tags out of the HTML and into a small inline loader that adds them once the hero image has loaded and painted, so the hero no longer competes with about 190 KB of JavaScript for bandwidth. If the hero image fails, the scripts load after 3 seconds anyway.
+- **Hero image** is served as WebP through `next/image`, preloaded with `fetchpriority="high"` from the top of the `<head>`. WebP decodes in a fraction of the time AVIF needs, so the first frame isn't held back by image decoding.
+- **No Node polyfills in the browser**: the `Buffer` polyfill Next.js injects by default is dropped from the client build, since nothing in the app uses it.
+- **Auth store**: components subscribe only to the fields they read, so restoring the session from storage doesn't re-render the navbar or restaurant list for logged-out visitors.
 - **Font**: the body font is self-hosted and subset to only the characters the app actually uses, dropping unused glyphs and metadata tables — 39 KB down to 22 KB, with no visual difference (verified with a pixel diff across every page and breakpoint).
 - **Restaurant list**: not fetched at all on first load. It only requests data once the section is about to enter the viewport (`IntersectionObserver`), so a visit that never scrolls makes zero calls to the restaurant API.
 - **Category tiles**: excluded from the page's initial hydration and loaded in a separate chunk right after the main content settles, the same pattern used for the toast library below.
@@ -167,6 +170,8 @@ The seed data has no real coordinates or delivery-radius fields, so the "Nearby"
 ## Project structure
 
 ```
+scripts/
+└── defer-scripts.mjs   # Post-build step: loads the home page's scripts after the hero paints
 src/
 ├── app/
 │   ├── (auth)/         # Login, register — no navbar/footer
@@ -194,7 +199,7 @@ src/
 
 ## Deployment
 
-Deployed on Vercel with zero extra config — static and dynamic routes are detected automatically from the App Router. Set `NEXT_PUBLIC_API_BASE_URL` in the Vercel project's environment variables. Remote restaurant/avatar images are only optimized through `next/image` for hosts listed in [`src/lib/image-hosts.ts`](src/lib/image-hosts.ts) (Cloudinary and Unsplash); add a host there before pointing the API at a new image source.
+Deployed on Vercel with zero extra config — static and dynamic routes are detected automatically from the App Router, and Vercel's default `npm run build` already includes the post-build script step. Set `NEXT_PUBLIC_API_BASE_URL` in the Vercel project's environment variables. Remote restaurant/avatar images are only optimized through `next/image` for hosts listed in [`src/lib/image-hosts.ts`](src/lib/image-hosts.ts) (Cloudinary and Unsplash); add a host there before pointing the API at a new image source.
 
 ## Author
 
