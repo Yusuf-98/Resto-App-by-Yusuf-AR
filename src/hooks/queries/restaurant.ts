@@ -52,7 +52,7 @@ export function useRecommended(
   params?: { page?: number; limit?: number },
   options?: { enabled?: boolean }
 ) {
-  const { isAuthenticated } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   return useQuery({
     queryKey: queryKeys.recommended(params),
     queryFn: () => restoApi.getRecommended(params),
