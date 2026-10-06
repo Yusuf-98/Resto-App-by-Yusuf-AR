@@ -137,7 +137,7 @@ Run it yourself with [PageSpeed Insights](https://pagespeed.web.dev/analysis?url
 
 ### How it stays fast
 
-- **Hero image** is served as AVIF/WebP through `next/image`, preloaded with `fetchpriority="high"` from the top of the `<head>`.
+- **Hero image** is served as WebP through `next/image`, preloaded with `fetchpriority="high"` from the top of the `<head>`.
 - **Font**: the body font is self-hosted and subset to only the characters the app actually uses, dropping unused glyphs and metadata tables — 39 KB down to 22 KB, with no visual difference (verified with a pixel diff across every page and breakpoint).
 - **Restaurant list**: not fetched at all on first load. It only requests data once the section is about to enter the viewport (`IntersectionObserver`), so a visit that never scrolls makes zero calls to the restaurant API.
 - **Category tiles**: excluded from the page's initial hydration and loaded in a separate chunk right after the main content settles, the same pattern used for the toast library below.
