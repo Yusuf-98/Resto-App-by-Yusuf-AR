@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
   },
   images: {
-    formats: ['image/avif', 'image/webp'],
+    formats: ['image/webp'],
     remotePatterns: OPTIMIZED_IMAGE_HOSTS.map((hostname) => ({
       protocol: 'https' as const,
       hostname,
