@@ -38,6 +38,7 @@ export function CategoriesSection() {
                 <Image
                   src={cat.icon}
                   alt={cat.label}
+                  fetchPriority={idx < 3 ? 'high' : undefined}
                   className='w-12 h-12 md:w-16.25 md:h-16.25 object-contain'
                 />
               </div>

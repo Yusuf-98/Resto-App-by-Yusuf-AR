@@ -26,6 +26,7 @@ export function SearchBar() {
       <Image
         src={SearchIcon}
         alt='Search'
+        fetchPriority='high'
         width={20}
         height={20}
         className='absolute left-4 md:left-6 top-1/2 -translate-y-1/2'
