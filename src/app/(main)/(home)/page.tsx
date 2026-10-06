@@ -5,7 +5,7 @@ import { FadeInItem } from '@/components/shared/FadeInStagger';
 import { HomeSearchProvider } from '@/components/features/home/HomeSearchProvider';
 import { SearchBar } from '@/components/features/home/SearchBar';
 import { RestaurantListSection } from '@/components/features/home/RestaurantListSection';
-import { LazyCategoriesSection } from '@/components/features/home/LazyCategoriesSection';
+import { CategoriesSection } from '@/components/features/home/CategoriesSection';
 
 export default function HomePage() {
   return (
@@ -53,7 +53,7 @@ export default function HomePage() {
         </FadeInItem>
 
         {/* --- Categories Section --- */}
-        <LazyCategoriesSection />
+        <CategoriesSection />
 
         {/* --- Restaurant List Section (Client) --- */}
         <Suspense>
