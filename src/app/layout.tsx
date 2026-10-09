@@ -13,6 +13,7 @@ const nunito = localFont({
 const BASE_URL = 'https://resto-app-by-yusuf-ar.vercel.app';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
     default: 'Foody — Explore Culinary Experiences',
     template: '%s | Foody',
@@ -20,6 +21,19 @@ export const metadata: Metadata = {
   description:
     'Search and refine your choice to discover the perfect restaurant.',
   keywords: ['food', 'restaurant', 'order', 'delivery'],
+  openGraph: {
+    type: 'website',
+    siteName: 'Foody',
+    title: 'Foody — Explore Culinary Experiences',
+    description:
+      'Search and refine your choice to discover the perfect restaurant.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Foody — Explore Culinary Experiences',
+    description:
+      'Search and refine your choice to discover the perfect restaurant.',
+  },
 };
 
 // --- Organization JSON-LD ---
